@@ -79,10 +79,18 @@ $projects = $conn->query("SELECT * FROM projects WHERE lang = '$lang'");
 <head>
     <title>Manage Projects</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body class="bg-gray-50 p-6 font-sans">
     <div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-        <h2 class="text-2xl font-bold mb-4">Manage Projects (<?= strtoupper($lang) ?>)</h2>
+        <div class="flex flex-row gap-x-8 items-center mb-4">
+            <?php
+                $link = 'dashboard.php';
+                $label = 'Back to Dashboard';
+                include 'components/back-button.php';
+            ?>
+            <h2 class="text-2xl font-bold">Manage Projects (<?= strtoupper($lang) ?>)</h2>
+        </div>
 
         <form method="post" enctype="multipart/form-data" class="grid grid-cols-1 gap-4 mb-6">
             <input type="hidden" name="lang" value="<?= $lang ?>">
@@ -141,7 +149,6 @@ $projects = $conn->query("SELECT * FROM projects WHERE lang = '$lang'");
                 <a href="?lang=kh" class="text-blue-500">Khmer</a> |
                 <a href="?lang=zh" class="text-blue-500">Chinese</a>
             </p>
-            <a href="dashboard.php" class="inline-block mt-2 text-gray-600 hover:underline">← Back to Dashboard</a>
         </div>
     </div>
 </body>

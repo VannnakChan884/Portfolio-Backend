@@ -61,10 +61,18 @@ $data = $conn->query("SELECT * FROM home WHERE lang = '$lang'")->fetch_assoc();
     <meta charset="UTF-8">
     <title>Manage Home - <?= strtoupper($lang) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans p-6">
     <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
-        <h2 class="text-2xl font-bold mb-4">Edit Home Section (<?= strtoupper($lang) ?>)</h2>
+        <div class="flex flex-row gap-x-8 items-center mb-4">
+            <?php
+                $link = 'dashboard.php';
+                $label = 'Back to Dashboard';
+                include 'components/back-button.php';
+            ?>
+            <h2 class="text-2xl font-bold">Edit Home Section (<?= strtoupper($lang) ?>)</h2>
+        </div>
 
         <form method="post" enctype="multipart/form-data" class="space-y-4">
             <input type="hidden" name="lang" value="<?= $lang ?>">
@@ -108,10 +116,6 @@ $data = $conn->query("SELECT * FROM home WHERE lang = '$lang'")->fetch_assoc();
                 <a href="?lang=kh" class="text-blue-600 hover:underline">Khmer</a>
                 <a href="?lang=zh" class="text-blue-600 hover:underline">Chinese</a>
             </div>
-        </div>
-
-        <div class="mt-4">
-            <a href="dashboard.php" class="text-sm text-gray-600 hover:text-black">← Back to Dashboard</a>
         </div>
     </div>
 </body>

@@ -73,10 +73,11 @@
 <body class="bg-gray-50 p-6 font-sans">
 <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
     <div class="flex flex-row gap-x-8 items-center mb-4">
-        <a href="dashboard.php" class="px-4 py-2 bg-gray-300/50 hover:bg-gray-300 text-xl text-gray-600 rounded">
-            <i class="fas fa-arrow-left mr-1"></i>
-            Back
-        </a>
+        <?php
+            $link = 'dashboard.php';
+            $label = 'Back to Dashboard';
+            include 'components/back-button.php';
+        ?>
         <h2 class="text-2xl font-bold">Manage Admin Users</h2>
     </div>
 

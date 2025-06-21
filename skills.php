@@ -107,11 +107,18 @@ $skills = $stmt->get_result();
     <meta charset="UTF-8">
     <title>Manage Skills</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body class="bg-gray-100 p-6 font-sans">
 <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
-
-    <h2 class="text-2xl font-bold mb-4">Manage Skills (<?= strtoupper(htmlspecialchars($lang)) ?>)</h2>
+    <div class="flex flex-row gap-x-8 items-center mb-4">
+        <?php
+            $link = 'dashboard.php';
+            $label = 'Back to Dashboard';
+            include 'components/back-button.php';
+        ?>
+        <h2 class="text-2xl font-bold">Manage Skills (<?= strtoupper(htmlspecialchars($lang)) ?>)</h2>
+    </div>
 
     <?php if (isset($_SESSION['success'])): ?>
         <div class="bg-green-500 text-white p-3 rounded mb-4">
@@ -204,7 +211,6 @@ $skills = $stmt->get_result();
             <a href="?lang=kh&search=<?= urlencode($search) ?>&page=1" class="text-blue-500">Khmer</a> |
             <a href="?lang=zh&search=<?= urlencode($search) ?>&page=1" class="text-blue-500">Chinese</a>
         </p>
-        <a href="dashboard.php" class="inline-block mt-2 text-gray-600 hover:underline">&larr; Back to Dashboard</a>
     </div>
 
 </div>

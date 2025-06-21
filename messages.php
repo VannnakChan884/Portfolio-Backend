@@ -22,10 +22,18 @@ $messages = $conn->query("SELECT * FROM messages ORDER BY sent_at DESC");
 <head>
     <title>View Messages</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body class="bg-gray-50 p-6 font-sans">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
-        <h2 class="text-2xl font-bold mb-4">Contact Messages</h2>
+        <div class="flex flex-row gap-x-8 items-center mb-4">
+            <?php
+                $link = 'dashboard.php';
+                $label = 'Back to Dashboard';
+                include 'components/back-button.php';
+            ?>
+            <h2 class="text-2xl font-bold">Contact Messages</h2>
+        </div>
 
         <div class="overflow-x-auto">
             <table class="w-full border text-sm">
@@ -55,8 +63,6 @@ $messages = $conn->query("SELECT * FROM messages ORDER BY sent_at DESC");
                 </tbody>
             </table>
         </div>
-
-        <a href="dashboard.php" class="inline-block mt-4 text-gray-600 hover:underline">← Back to Dashboard</a>
     </div>
 </body>
 </html>

@@ -1,0 +1,94 @@
+<!-- Chart + Dark Mode Script -->
+    <script>
+        // Skill chart
+        const ctx = document.getElementById('skillChart').getContext('2d');
+        const skillLabels = <?= json_encode($skillLabels) ?>;
+        const skillData = <?= json_encode($skillPercentages) ?>;
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: skillLabels,
+                datasets: [{
+                    label: 'Skill Proficiency (%)',
+                    data: skillData,
+                    backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                    borderColor: 'rgba(37, 99, 235, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Dark mode toggle
+        const toggleBtn = document.getElementById('dark-mode-toggle');
+        const htmlEl = document.documentElement;
+
+        if (localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlEl.classList.add('dark');
+        }
+
+        function updateToggleIcon() {
+            toggleBtn.textContent = htmlEl.classList.contains('dark') ? '☀️' : '🌙';
+        }
+
+        updateToggleIcon();
+
+        toggleBtn.addEventListener('click', () => {
+            htmlEl.classList.toggle('dark');
+            localStorage.setItem('theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+            updateToggleIcon();
+        });
+
+        // toggle sidebar width
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleBtn = document.getElementById('toggleSidebar');
+        const menuTextItems = document.querySelectorAll('.menu-text');
+        const menuTitle = document.querySelector('.menu-title');
+
+        // Load previous state
+        const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (isCollapsed) collapseSidebar();
+
+        sidebarToggleBtn.addEventListener('click', () => {
+            if (sidebar.classList.contains('w-16')) {
+                expandSidebar();
+                localStorage.setItem('sidebarCollapsed', 'false');
+            } else {
+                collapseSidebar();
+                localStorage.setItem('sidebarCollapsed', 'true');
+            }
+        });
+
+        function collapseSidebar() {
+            sidebar.classList.remove('w-1/3', 'xl:w-1/6', 'lg:w-1/4');
+            sidebar.classList.add('w-16');
+            menuTextItems.forEach(text => text.classList.add('hidden'));
+            if (menuTitle) menuTitle.classList.add('hidden');
+        }
+
+        function expandSidebar() {
+            sidebar.classList.remove('w-16');
+            sidebar.classList.add('w-1/3', 'xl:w-1/6', 'lg:w-1/4');
+            menuTextItems.forEach(text => text.classList.remove('hidden'));
+            if (menuTitle) menuTitle.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

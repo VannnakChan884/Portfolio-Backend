@@ -8,15 +8,15 @@ require_once '../includes/db.php';
 
 $lang = $_GET['lang'] ?? 'en';
 
-$stmt = $conn->prepare("SELECT * FROM projects WHERE lang = ? ORDER BY id DESC");
+$stmt = $conn->prepare("SELECT * FROM home WHERE lang = ? ORDER BY id DESC");
 $stmt->bind_param("s", $lang);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$aboutMe = [];
+$home = [];
 while ($row = $result->fetch_assoc()) {
-    $aboutMe[] = $row;
+    $home[] = $row;
 }
 
-echo json_encode($aboutMe);
+echo json_encode($home);
 ?>

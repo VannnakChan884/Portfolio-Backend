@@ -14,7 +14,7 @@
 
     // Fetch skill data for chart (default lang = 'en')
     $lang = 'en';
-    $stmt = $conn->prepare("SELECT title, percentage FROM skills WHERE lang = ? ORDER BY id ASC");
+    $stmt = $conn->prepare("SELECT name, level FROM skills WHERE lang = ? ORDER BY id ASC");
     $stmt->bind_param("s", $lang);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -22,8 +22,8 @@
     $skillLabels = [];
     $skillPercentages = [];
     while ($row = $result->fetch_assoc()) {
-        $skillLabels[] = $row['title'];
-        $skillPercentages[] = (int)$row['percentage'];
+        $skillLabels[] = $row['name'];
+        $skillPercentages[] = (int)$row['level'];
     }
     
     // Fetch user/site name

@@ -46,7 +46,7 @@
     }
 
     // Fetch users
-    $users = $conn->query("SELECT id, username, email, full_name, user_profile, created_at FROM users ORDER BY created_at DESC");
+    $users = $conn->query("SELECT id, username, email, full_name, user_profile, created_at, updated_at FROM users ORDER BY created_at DESC");
 ?>
 
 <!DOCTYPE html>
@@ -145,6 +145,7 @@
                 <th class="p-2 border">Full Name</th>
                 <th class="p-2 border">Profile</th>
                 <th class="p-2 border">Created At</th>
+                <th class="p-2 border">Updated At</th>
                 <th class="p-2 border">Actions</th>
             </tr>
         </thead>
@@ -154,15 +155,12 @@
                 <td class="p-2 border"><?= htmlspecialchars($user['username']) ?></td>
                 <td class="p-2 border"><?= htmlspecialchars($user['email']) ?></td>
                 <td class="p-2 border"><?= htmlspecialchars($user['full_name']) ?></td>
-                
                 <td class="p-2 border">
-                    <?php if ($user['user_profile']): ?>
-                        <img src="<?= htmlspecialchars($user['user_profile']) ?>" alt="Profile" class="w-10 h-10 rounded-full mx-auto">
-                    <?php else: ?>
-                        N/A
-                    <?php endif; ?>
+                    <img src="<?= htmlspecialchars($user['user_profile'] ?: 'assets/uploads/default.png') ?>" alt="Profile" class="w-10 h-10 rounded-full mx-auto object-cover">
                 </td>
+
                 <td class="p-2 border"><?= $user['created_at'] ?></td>
+                <td class="p-2 border"><?= $user['updated_at'] ?? '—' ?></td>
                 <td class="p-2 border">
                     <a href="?edit=<?= $user['id'] ?>
                     &username=<?= urlencode($user['username'] ?? '') ?>

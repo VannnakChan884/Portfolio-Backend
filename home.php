@@ -42,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         // Insert
-        $stmt = $conn->prepare("INSERT INTO home (name, title, bio, profile_image, lang) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $name, $title, $bio, $imagePath, $lang);
+        $stmt = $conn->prepare("INSERT INTO home (title, description, profile_image, lang) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $name, $title, $imagePath, $lang);
     }
 
     $stmt->execute();

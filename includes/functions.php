@@ -20,9 +20,9 @@ function uploadProfileImage($inputName, &$error) {
 }
 
 function handleAddUser($conn) {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $full_name = $_POST['full_name'];
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $full_name = trim($_POST['full_name']);
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
     $profilePath = 'assets/uploads/default.png'; // default fallback
 
@@ -43,19 +43,20 @@ function handleAddUser($conn) {
         }
     }
 
-    $stmt = $conn->prepare("INSERT INTO users (username, email, password, full_name, user_profile, created_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())");
-    $stmt->bind_param("sssss", $username, $email, $password, $full_name, $profilePath);
+    $stmt = $conn->prepare("INSERT INTO users (username, email, password, full_name, user_profile, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())");
+    $stmt->bind_param("ssssss", $username, $email, $password, $full_name, $profilePath, $role);
 
     return $stmt->execute() ? true : $stmt->error;
 }
 
-    function handleUpdateUser($conn) {
+function handleUpdateUser($conn) {
         $id = $_POST['id'];
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $full_name = $_POST['full_name'];
+        $username = trim($_POST['username']);
+        $email = trim($_POST['email']);
+        $full_name = trim($_POST['full_name']);
         $existingProfile = $_POST['existing_profile'] ?? 'assets/uploads/default.png';
         $profilePath = $existingProfile;
+        $role = $_POST['role'];
 
         if (!empty($_FILES['user_profile']['name'])) {
             $tmpPath = $_FILES['user_profile']['tmp_name'];
@@ -65,7 +66,7 @@ function handleAddUser($conn) {
 
             if (file_exists($newProfilePath)) {
                 $_SESSION['error'] = "Image already exists. Please rename your file or choose another one.";
-                header("Location: users.php?edit=$id&username=" . urlencode($username) . "&email=" . urlencode($email) . "&full_name=" . urlencode($full_name) . "&user_profile=" . urlencode($profilePath));
+                header("Location: users.php?edit={$_POST['id']}&username=" . urlencode($_POST['username']) . "&email=" . urlencode($_POST['email']) . "&full_name=" . urlencode($_POST['full_name']) . "&user_profile=" . urlencode($_POST['existing_profile']) . "&role=" . urlencode($_POST['role']));
                 exit;
             } else {
                 if (move_uploaded_file($tmpPath, $newProfilePath)) {
@@ -77,14 +78,14 @@ function handleAddUser($conn) {
                     $profilePath = $newProfilePath;
                 } else {
                     $_SESSION['error'] = "Failed to upload new profile image.";
-                    header("Location: users.php?edit=$id&username=" . urlencode($username) . "&email=" . urlencode($email) . "&full_name=" . urlencode($full_name) . "&user_profile=" . urlencode($profilePath));
+                    header("Location: users.php?edit={$_POST['id']}&username=" . urlencode($_POST['username']) . "&email=" . urlencode($_POST['email']) . "&full_name=" . urlencode($_POST['full_name']) . "&user_profile=" . urlencode($_POST['existing_profile']) . "&role=" . urlencode($_POST['role']));
                     exit;
                 }
             }
         }
 
-        $stmt = $conn->prepare("UPDATE users SET username=?, email=?, full_name=?, user_profile=?, updated_at=NOW() WHERE id=?");
-        $stmt->bind_param("ssssi", $username, $email, $full_name, $profilePath, $id);
+        $stmt = $conn->prepare("UPDATE users SET username=?, email=?, full_name=?, user_profile=?, role=?, updated_at=NOW() WHERE id=?");
+        $stmt->bind_param("sssssi", $username, $email, $full_name, $profilePath, $role, $id);
 
         return $stmt->execute() ? true : $stmt->error;
-    }
+}

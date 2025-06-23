@@ -1,43 +1,62 @@
 <?php
-    session_start();
-    if (!isset($_SESSION["admin_logged_in"])) {
-        header("Location: auth/login.php");
-        exit();
-    }
-    require_once 'includes/db.php';
+session_start();
 
-    // Fetch counts
-    $totalSkills = $conn->query("SELECT COUNT(*) as total FROM skills")->fetch_assoc()['total'];
-    $totalProjects = $conn->query("SELECT COUNT(*) as total FROM projects")->fetch_assoc()['total'];
-    $totalMessages = $conn->query("SELECT COUNT(*) as total FROM messages")->fetch_assoc()['total'];
-    $totalUsers = $conn->query("SELECT COUNT(*) as total FROM users")->fetch_assoc()['total'];
+// Redirect to login if not authenticated
+if (!isset($_SESSION["admin_logged_in"])) {
+    header("Location: auth/login.php");
+    exit();
+}
 
-    // Fetch skill data for chart (default lang = 'en')
-    $lang = 'en';
-    $stmt = $conn->prepare("SELECT name, level FROM skills WHERE lang = ? ORDER BY id ASC");
-    $stmt->bind_param("s", $lang);
-    $stmt->execute();
-    $result = $stmt->get_result();
+require_once 'includes/db.php';
 
-    $skillLabels = [];
-    $skillPercentages = [];
-    while ($row = $result->fetch_assoc()) {
-        $skillLabels[] = $row['name'];
-        $skillPercentages[] = (int)$row['level'];
-    }
-    
-    // Fetch user/site name
+// Initialize defaults
+$siteTitle = 'Admin Dashboard';
+$userName = 'Admin';
+$userProfile = 'assets/uploads/default.png'; // fallback image
+
+// ✅ Only run user query if session ID exists
+if (isset($_SESSION['admin_id'])) {
     $adminId = $_SESSION['admin_id'];
-    $userData = $conn->query("SELECT username, full_name, user_profile FROM users WHERE id = $adminId")->fetch_assoc();
-    $siteTitle = $userData['full_name'] ?? 'Admin Dashboard';
-    $userName = $userData['username'] ?? 'Admin';
-    $userProfile = $userData['user_profile'];
+
+    // Use a prepared statement for security
+    $stmt = $conn->prepare("SELECT username, full_name, user_profile FROM users WHERE id = ?");
+    $stmt->bind_param("i", $adminId);
+    $stmt->execute();
+    $stmt->bind_result($username, $full_name, $user_profile);
+    $stmt->fetch();
+    $stmt->close();
+
+    $siteTitle = $full_name ?: 'Admin Dashboard';
+    $userName = $username ?: 'Admin';
+    $userProfile = $user_profile ?: 'assets/uploads/default.png';
+}
+
+// Fetch counts
+$totalSkills = $conn->query("SELECT COUNT(*) as total FROM skills")->fetch_assoc()['total'];
+$totalProjects = $conn->query("SELECT COUNT(*) as total FROM projects")->fetch_assoc()['total'];
+$totalMessages = $conn->query("SELECT COUNT(*) as total FROM messages")->fetch_assoc()['total'];
+$totalUsers = $conn->query("SELECT COUNT(*) as total FROM users")->fetch_assoc()['total'];
+
+// Skill chart data (default: English)
+$lang = 'en';
+$stmt = $conn->prepare("SELECT title, percentage FROM skills WHERE lang = ? ORDER BY id ASC");
+$stmt->bind_param("s", $lang);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$skillLabels = [];
+$skillPercentages = [];
+
+while ($row = $result->fetch_assoc()) {
+    $skillLabels[] = $row['title'];
+    $skillPercentages[] = (int)$row['percentage'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" class="">
 <head>
     <meta charset="UTF-8" />
-    <title><?= htmlspecialchars($siteTitle)?> - Admin Dashboard</title>
+    <title><?= htmlspecialchars($siteTitle) ?> - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -51,4 +70,3 @@
     </script>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
- 

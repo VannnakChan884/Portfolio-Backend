@@ -55,11 +55,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
             <li>
-                <a href="users.php"
-                   class="menu-item flex items-center gap-2 py-2 px-4 hover:bg-green-300 block <?= $currentPage === 'users.php' ? 'bg-green-200 font-semibold' : '' ?>">
-                    <i class="fas fa-users"></i> 
-                    <span class="menu-text">View Users</span>
-                </a>
+                <?php if ($_SESSION['admin_role'] === 'admin'): ?>
+                    <a href="users.php"
+                    class="menu-item flex items-center gap-2 py-2 px-4 hover:bg-green-300 block <?= $currentPage === 'users.php' ? 'bg-green-200 font-semibold' : '' ?>">
+                        <i class="fas fa-users"></i> 
+                        <span class="menu-text">View Users</span>
+                    </a>
+                <?php endif; ?>
             </li>
         </ul>
     </nav>

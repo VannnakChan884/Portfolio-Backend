@@ -67,19 +67,20 @@ export function initUpdateButtonDisable(formSelector, buttonSelector) {
     if (!form || !button) return;
 
     const originalValues = {};
-    const inputs = form.querySelectorAll("input[name]:not([type='hidden'])");
+    const fields = form.querySelectorAll("input[name]:not([type='hidden']), select[name], textarea[name]");
 
-    inputs.forEach(input => {
-        originalValues[input.name] = input.value;
+    fields.forEach(field => {
+        if (field.type === 'file') return;
+        originalValues[field.name] = field.value;
     });
 
     function checkChanges() {
         let changed = false;
 
-        inputs.forEach(input => {
-            if (input.type === 'file') {
-                if (input.files.length > 0) changed = true;
-            } else if (input.value !== originalValues[input.name]) {
+        fields.forEach(field => {
+            if (field.type === 'file') {
+                if (field.files.length > 0) changed = true;
+            } else if (field.value !== originalValues[field.name]) {
                 changed = true;
             }
         });
@@ -89,11 +90,61 @@ export function initUpdateButtonDisable(formSelector, buttonSelector) {
         button.classList.toggle('pointer-events-none', !changed);
     }
 
-    inputs.forEach(input => {
-        input.addEventListener('input', checkChanges);
-        input.addEventListener('change', checkChanges);
+    fields.forEach(field => {
+        field.addEventListener('input', checkChanges);
+        field.addEventListener('change', checkChanges); // especially important for <select>
     });
 
-    checkChanges(); // run on load
+    checkChanges(); // Run once on load
 }
 
+
+// Show Image Preview on File Upload
+document.getElementById('user_profile').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('imagePreview');
+    const previewContainer = document.getElementById('previewContainer');
+    const uploadBox = document.getElementById('uploadBox');
+    const fileActionBtn = document.getElementById('fileActionBtn');
+
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            previewContainer.classList.remove('hidden');
+            uploadBox.classList.add('hidden');
+            fileActionBtn.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Reset/Remove Image Preview
+document.getElementById('removeImageBtn').addEventListener('click', function () {
+    const previewContainer = document.getElementById('previewContainer');
+    const uploadBox = document.getElementById('uploadBox');
+    const fileActionBtn = document.getElementById('fileActionBtn');
+    const fileInput = document.getElementById('user_profile');
+    const imagePreview = document.getElementById('imagePreview');
+
+    fileInput.value = '';
+    imagePreview.src = '';
+    previewContainer.classList.add('hidden');
+    uploadBox.classList.remove('hidden');
+    fileActionBtn.classList.add('hidden');
+});
+
+//  Auto-Hide message After 3 Seconds
+function autoHideMessage(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        setTimeout(() => {
+            el.style.transition = 'opacity 0.5s ease';
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 500);
+        }, 3000);
+    }
+}
+
+autoHideMessage('successMessage');
+autoHideMessage('errorMessage');

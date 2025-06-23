@@ -1,74 +1,75 @@
 <?php
-    session_start();
-    if (!isset($_SESSION["admin_logged_in"])) {
-        header("Location: auth/login.php");
-        exit();
+session_start();
+if (!isset($_SESSION["admin_logged_in"])) {
+    header("Location: auth/login.php");
+    exit();
+}
+
+require_once 'includes/db.php';
+require_once 'includes/functions.php';
+
+// Handle Assign Role
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign_role_submit'])) {
+    $userId = intval($_POST['user_id']);
+    $role = $_POST['assign_role'];
+
+    $stmt = $conn->prepare("UPDATE users SET role = ?, updated_at = NOW() WHERE id = ?");
+    $stmt->bind_param("si", $role, $userId);
+
+    if ($stmt->execute()) {
+        $_SESSION['success'] = "Role assigned successfully.";
+    } else {
+        $_SESSION['error'] = "Failed to assign role.";
     }
+    header("Location: users.php");
+    exit;
+}
 
-    require_once 'includes/db.php';
-    require_once 'includes/functions.php';
-
-    // Handle Assign Role
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign_role_submit'])) {
-        $userId = intval($_POST['user_id']);
-        $role = $_POST['assign_role'];
-
-        $stmt = $conn->prepare("UPDATE users SET role = ?, updated_at = NOW() WHERE id = ?");
-        $stmt->bind_param("si", $role, $userId);
-
-        if ($stmt->execute()) {
-            $_SESSION['success'] = "Role assigned successfully.";
-        } else {
-            $_SESSION['error'] = "Failed to assign role.";
-        }
+// Handle Add User
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
+    $result = handleAddUser($conn);
+    if ($result === true) {
+        $_SESSION['success'] = "User added successfully.";
         header("Location: users.php");
         exit;
+    } else {
+        $error = $result;
     }
+}
 
-    // Handle Add User
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
-        $result = handleAddUser($conn);
-        if ($result === true) {
-            $_SESSION['success'] = "User added successfully.";
-            header("Location: users.php");
-            exit;
-        } else {
-            $error = $result;
-        }
-    }
-
-    // Handle Update User
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
-        $result = handleUpdateUser($conn);
-        if ($result === true) {
-            $_SESSION['success'] = "User updated successfully.";
-            header("Location: users.php");
-            exit;
-        } else {
-            $_SESSION['error'] = $result;
-            header("Location: users.php?edit={$_POST['id']}&username=" . urlencode($_POST['username']) . "&email=" . urlencode($_POST['email']) . "&full_name=" . urlencode($_POST['full_name']) . "&user_profile=" . urlencode($_POST['existing_profile']) . "&role=" . urlencode($_POST['role']));
-            exit;
-        }
-    }
-
-    // Handle Delete User
-    if (isset($_GET['delete'])) {
-        $id = intval($_GET['delete']);
-        if ($conn->query("DELETE FROM users WHERE id = $id")) {
-            $_SESSION['success'] = "User deleted successfully.";
-        } else {
-            $_SESSION['error'] = "Failed to delete user.";
-        }
+// Handle Update User
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
+    $result = handleUpdateUser($conn);
+    if ($result === true) {
+        $_SESSION['success'] = "User updated successfully.";
         header("Location: users.php");
         exit;
+    } else {
+        $_SESSION['error'] = $result;
+        header("Location: users.php?edit={$_POST['id']}&username=" . urlencode($_POST['username']) . "&email=" . urlencode($_POST['email']) . "&full_name=" . urlencode($_POST['full_name']) . "&user_profile=" . urlencode($_POST['existing_profile']) . "&role=" . urlencode($_POST['role']));
+        exit;
     }
+}
 
-    // Fetch users
-    $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users ORDER BY created_at DESC");
+// Handle Delete User
+if (isset($_GET['delete'])) {
+    $id = intval($_GET['delete']);
+    if ($conn->query("DELETE FROM users WHERE id = $id")) {
+        $_SESSION['success'] = "User deleted successfully.";
+    } else {
+        $_SESSION['error'] = "Failed to delete user.";
+    }
+    header("Location: users.php");
+    exit;
+}
+
+// Fetch users
+$users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users ORDER BY created_at DESC");
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Admin User Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -81,20 +82,21 @@
             },
             variants: {
                 extend: {
-                opacity: ['disabled'],
-                pointerEvents: ['disabled'],
+                    opacity: ['disabled'],
+                    pointerEvents: ['disabled'],
                 },
             },
         }
     </script>
 </head>
+
 <body class="bg-gray-50 p-6 font-sans">
     <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow">
         <div class="flex flex-row gap-x-8 items-center mb-4">
             <?php
-                $link = 'dashboard.php';
-                $label = 'Back to Dashboard';
-                include 'components/back-button.php';
+            $link = 'dashboard.php';
+            $label = 'Back to Dashboard';
+            include 'components/back-button.php';
             ?>
             <h2 class="text-2xl font-bold">Manage Admin Users</h2>
         </div>
@@ -104,14 +106,14 @@
             <div id="successMessage" class="bg-green-500 text-white p-3 rounded mb-4">
                 <?= htmlspecialchars($_SESSION['success']) ?>
             </div>
-        <?php unset($_SESSION['success']); endif; ?>
+            <?php unset($_SESSION['success']); endif; ?>
 
         <?php if (isset($_SESSION['error'])): ?>
             <div id="errorMessage" class="bg-red-500 text-white p-3 rounded mb-4">
                 <?= htmlspecialchars($_SESSION['error']) ?>
             </div>
-        <?php unset($_SESSION['error']); endif; ?>
-        
+            <?php unset($_SESSION['error']); endif; ?>
+
         <form method="POST" enctype="multipart/form-data" class="mb-6 grid grid-cols-1 gap-4 max-w-xl">
             <input type="hidden" name="id" value="<?= $_GET['edit'] ?? '' ?>">
 
@@ -132,15 +134,14 @@
                 <label for="user_profile" class="block p-6 cursor-pointer">
                     <span class="block text-gray-700">Drag & drop your files here or
                         <span class="text-blue-600 underline">browse</span></span>
-                    <input id="user_profile" type="file" name="user_profile" accept="image/*"
-                        class="hidden">
+                    <input id="user_profile" type="file" name="user_profile" accept="image/*" class="hidden">
                     <p class="text-xs text-gray-500 mt-2">File must be .jpg .jpeg .png .gif .bmp</p>
                 </label>
             </div>
 
             <?php
-                // Default role for form value
-                $selectedRole = $_GET['role'] ?? 'user';
+            // Default role for form value
+            $selectedRole = $_GET['role'] ?? 'user';
             ?>
             <select name="role" class="border p-2 rounded" required>
                 <option value="admin" <?= $selectedRole === 'admin' ? 'selected' : '' ?>>Admin</option>
@@ -203,40 +204,43 @@
             </thead>
             <tbody>
                 <?php while ($user = $users->fetch_assoc()): ?>
-                <tr class="border-b">
-                    <td class="p-2 border"><?= htmlspecialchars($user['username']) ?></td>
-                    <td class="p-2 border"><?= htmlspecialchars($user['email']) ?></td>
-                    <td class="p-2 border"><?= htmlspecialchars($user['full_name']) ?></td>
-                    <td class="p-2 border">
-                        <img src="<?= htmlspecialchars($user['user_profile'] ?: 'assets/uploads/default.png') ?>" alt="Profile" class="w-10 h-10 rounded-full mx-auto object-cover">
-                    </td>
-                    <td class="p-2 border">
-                        <?php if (empty($user['role'])): ?>
-                            <form method="POST" class="flex items-center gap-2">
-                                <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                                <select name="assign_role" class="border p-1 rounded">
-                                    <option value="user">User</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                                <button type="submit" name="assign_role_submit" class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">Assign</button>
-                            </form>
-                        <?php else: ?>
-                            <span class="text-sm px-2 py-1 rounded bg-blue-100 text-blue-600"><?= htmlspecialchars($user['role']) ?></span>
-                        <?php endif; ?>
-                    </td>
-                    <td class="p-2 border"><?= $user['created_at'] ?></td>
-                    <td class="p-2 border"><?= $user['updated_at'] ?? '—' ?></td>
-                    <td class="p-2 border">
-                        <a href="?edit=<?= $user['id'] ?>
-                            &username=<?= urlencode($user['username'] ?? '') ?>
-                            &email=<?= urlencode($user['email'] ?? '') ?>
-                            &full_name=<?= urlencode($user['full_name'] ?? '') ?>
-                            &user_profile=<?= urlencode($user['user_profile'] ?? '') ?>
-                            &role=<?= urlencode($user['role'] ?? 'user') ?>"
-                            class="text-blue-600 hover:underline">Edit </a>|
-                        <a href="?delete=<?= $user['id'] ?>" onclick="return confirm('Delete user?')" class="text-red-600 hover:underline">Delete</a>
-                    </td>
-                </tr>
+                    <tr class="border-b">
+                        <td class="p-2 border"><?= htmlspecialchars($user['username']) ?></td>
+                        <td class="p-2 border"><?= htmlspecialchars($user['email']) ?></td>
+                        <td class="p-2 border"><?= htmlspecialchars($user['full_name']) ?></td>
+                        <td class="p-2 border">
+                            <img src="<?= htmlspecialchars($user['user_profile'] ?: 'assets/uploads/default.png') ?>"
+                                alt="Profile" class="w-10 h-10 rounded-full mx-auto object-cover">
+                        </td>
+                        <td class="p-2 border">
+                            <?php if (empty($user['role'])): ?>
+                                <form method="POST" class="flex items-center gap-2">
+                                    <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                                    <select name="assign_role" class="border p-1 rounded">
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                    <button type="submit" name="assign_role_submit"
+                                        class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">Assign</button>
+                                </form>
+                            <?php else: ?>
+                                <span
+                                    class="text-sm px-2 py-1 rounded bg-blue-100 text-blue-600"><?= htmlspecialchars($user['role']) ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="p-2 border"><?= $user['created_at'] ?></td>
+                        <td class="p-2 border"><?= $user['updated_at'] ?? '—' ?></td>
+                        <td class="p-2 border">
+                            <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'])) ?>&role=<?= urlencode(trim($user['role'])) ?>"
+                                class="text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
+                                <i class="fa-solid fa-user-pen"></i>
+                            </a>
+                            <a href="?delete=<?= $user['id'] ?>" onclick="return confirm('Are you sure? You want to delete this user?')"
+                                class="text-sm px-2 py-1 rounded bg-red-100 text-red-600">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
@@ -253,6 +257,49 @@
         if (isEditing) {
             initUpdateButtonDisable('form', 'button[name="update_user"]');
         }
+
+        const dropArea = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('user_profile');
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, e => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        // Highlight on dragover
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => {
+                dropArea.classList.add('bg-blue-50', 'border-blue-500');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => {
+                dropArea.classList.remove('bg-blue-50', 'border-blue-500');
+            });
+        });
+
+        // Handle dropped files
+        dropArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                fileInput.files = files;
+
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    document.getElementById('imagePreview').src = event.target.result;
+                    document.getElementById('previewContainer').classList.remove('hidden');
+                    document.getElementById('fileActionBtn').classList.remove('hidden');
+                    dropArea.classList.add('hidden');
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        });
     </script>
 </body>
+
 </html>

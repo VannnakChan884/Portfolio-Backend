@@ -148,3 +148,48 @@ function autoHideMessage(id) {
 
 autoHideMessage('successMessage');
 autoHideMessage('errorMessage');
+
+// Drag & Drop Support
+const dropArea = document.getElementById('uploadBox');
+const fileInput = document.getElementById('user_profile');
+
+if (dropArea && fileInput) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => {
+            dropArea.classList.add('bg-blue-50', 'border-blue-500');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => {
+            dropArea.classList.remove('bg-blue-50', 'border-blue-500');
+        });
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            fileInput.files = files;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const preview = document.getElementById('imagePreview');
+                const previewContainer = document.getElementById('previewContainer');
+                const fileActionBtn = document.getElementById('fileActionBtn');
+
+                preview.src = event.target.result;
+                previewContainer.classList.remove('hidden');
+                dropArea.classList.add('hidden');
+                fileActionBtn.classList.remove('hidden');
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    });
+}

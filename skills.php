@@ -176,18 +176,20 @@
                                     $colorClass = 'bg-red-500';
                                 }
 
-                                $textInside = $percent >= 20; // display inside if wide enough
+                                $textInside = $percent >= 20;
                             ?>
 
-                            <div class="relative w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                            <div class="relative w-full bg-gray-200 rounded-full h-5 overflow-hidden">
                                 <div
-                                    class="progress-bar h-4 text-white text-xs leading-4 rounded-full <?= $colorClass ?> <?= $textInside ? 'text-center px-1' : '' ?>"
-                                    data-percent="<?= $percent ?>"
-                                    style="width: 0%;">
+                                    class="progress-bar h-5 text-white text-xs flex items-center <?= $textInside ? 'justify-center' : '' ?> <?= $colorClass ?> rounded-full"
+                                    style="width: 0%"
+                                    data-percent="<?= $percent ?>">
                                     <?= $textInside ? $percent . '%' : '' ?>
                                 </div>
                                 <?php if (!$textInside): ?>
-                                    <span class="absolute left-full ml-2 text-xs text-gray-700"><?= $percent ?>%</span>
+                                    <div class="absolute left-[calc(<?= $percent ?>%+4px)] top-0 h-5 flex items-center text-xs text-gray-700">
+                                        <?= $percent ?>%
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </td>

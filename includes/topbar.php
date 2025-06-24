@@ -1,4 +1,4 @@
-<header class="flex justify-between items-center px-6 py-4 rounded bg-white dark:bg-gray-800 shadow">
+<header class="sticky top-0 flex justify-between items-center px-6 py-4 mb-4 rounded bg-white dark:bg-gray-800 shadow">
     <h1 class="text-2xl font-bold capitalize">Welcome - <?= htmlspecialchars($userName) ?> 👋</h1>
     <div class="flex gap-4 items-center">
         <button id="dark-mode-toggle" aria-label="Toggle Dark Mode"

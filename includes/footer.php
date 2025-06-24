@@ -1,40 +1,4 @@
-<!-- Chart + Dark Mode Script -->
     <script>
-        // Skill chart
-        const ctx = document.getElementById('skillChart').getContext('2d');
-        const skillLabels = <?= json_encode($skillLabels) ?>;
-        const skillData = <?= json_encode($skillPercentages) ?>;
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: skillLabels,
-                datasets: [{
-                    label: 'Skill Proficiency (%)',
-                    data: skillData,
-                    backgroundColor: 'rgba(37, 99, 235, 0.7)',
-                    borderColor: 'rgba(37, 99, 235, 1)',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100
-                    }
-                },
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    }
-                }
-            }
-        });
-
         // Dark mode toggle
         const toggleBtn = document.getElementById('dark-mode-toggle');
         const htmlEl = document.documentElement;

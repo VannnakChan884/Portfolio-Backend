@@ -7,7 +7,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <nav>
         <div class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 py-4 px-4">
             <h2 class="menu-title text-2xl font-bold capitalize">Portfolio - <?= htmlspecialchars($userName) ?></h2>
-            <button id="toggleSidebar" class="text-xl hover:text-green-500" title="Toggle Menu">
+            <button id="toggleSidebar" class="flex items-center justify-center w-10 h-10 hover:bg-gray-300/50 p-2 text-xl hover:text-green-500 rounded-lg" title="Toggle Menu">
                 <i class="fas fa-bars"></i>
             </button>
         </div>

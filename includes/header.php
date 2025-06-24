@@ -1,56 +1,35 @@
 <?php
-session_start();
+    session_start();
 
-// Redirect to login if not authenticated
-if (!isset($_SESSION["admin_logged_in"])) {
-    header("Location: auth/login.php");
-    exit();
-}
+    // Redirect to login if not authenticated
+    if (!isset($_SESSION["admin_logged_in"])) {
+        header("Location: auth/login.php");
+        exit();
+    }
 
-require_once 'includes/db.php';
+    require_once 'includes/db.php';
 
-// Initialize defaults
-$siteTitle = 'Admin Dashboard';
-$userName = 'Admin';
-$userProfile = 'assets/uploads/default.png'; // fallback image
+    // Initialize defaults
+    $siteTitle = 'Admin Dashboard';
+    $userName = 'Admin';
+    $userProfile = 'assets/uploads/default.png'; // fallback image
 
-// ✅ Only run user query if session ID exists
-if (isset($_SESSION['admin_id'])) {
-    $adminId = $_SESSION['admin_id'];
+    // ✅ Only run user query if session ID exists
+    if (isset($_SESSION['admin_id'])) {
+        $adminId = $_SESSION['admin_id'];
 
-    // Use a prepared statement for security
-    $stmt = $conn->prepare("SELECT username, full_name, user_profile FROM users WHERE id = ?");
-    $stmt->bind_param("i", $adminId);
-    $stmt->execute();
-    $stmt->bind_result($username, $full_name, $user_profile);
-    $stmt->fetch();
-    $stmt->close();
+        // Use a prepared statement for security
+        $stmt = $conn->prepare("SELECT username, full_name, user_profile FROM users WHERE id = ?");
+        $stmt->bind_param("i", $adminId);
+        $stmt->execute();
+        $stmt->bind_result($username, $full_name, $user_profile);
+        $stmt->fetch();
+        $stmt->close();
 
-    $siteTitle = $full_name ?: 'Admin Dashboard';
-    $userName = $username ?: 'Admin';
-    $userProfile = $user_profile ?: 'assets/uploads/default.png';
-}
-
-// Fetch counts
-$totalSkills = $conn->query("SELECT COUNT(*) as total FROM skills")->fetch_assoc()['total'];
-$totalProjects = $conn->query("SELECT COUNT(*) as total FROM projects")->fetch_assoc()['total'];
-$totalMessages = $conn->query("SELECT COUNT(*) as total FROM messages")->fetch_assoc()['total'];
-$totalUsers = $conn->query("SELECT COUNT(*) as total FROM users")->fetch_assoc()['total'];
-
-// Skill chart data (default: English)
-$lang = 'en';
-$stmt = $conn->prepare("SELECT title, percentage FROM skills WHERE lang = ? ORDER BY id ASC");
-$stmt->bind_param("s", $lang);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$skillLabels = [];
-$skillPercentages = [];
-
-while ($row = $result->fetch_assoc()) {
-    $skillLabels[] = $row['title'];
-    $skillPercentages[] = (int)$row['percentage'];
-}
+        $siteTitle = $full_name ?: 'Admin Dashboard';
+        $userName = $username ?: 'Admin';
+        $userProfile = $user_profile ?: 'assets/uploads/default.png';
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en" class="">
@@ -65,7 +44,13 @@ while ($row = $result->fetch_assoc()) {
             darkMode: 'class',
             theme: {
                 extend: {}
-            }
+            },
+            variants: {
+                extend: {
+                    opacity: ['disabled'],
+                    pointerEvents: ['disabled'],
+                },
+            },
         }
     </script>
 </head>

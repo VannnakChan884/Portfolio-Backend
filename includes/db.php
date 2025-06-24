@@ -106,15 +106,23 @@ $conn->query("CREATE TABLE IF NOT EXISTS messages (
 )");
 
 // LOGIN_CODE table
-// $conn->query("CREATE TABLE login_codes (
-//     id INT AUTO_INCREMENT PRIMARY KEY,
-//     user_id INT NOT NULL,
-//     code VARCHAR(6) NOT NULL,
-//     expires_at DATETIME,
-//     is_used BOOLEAN DEFAULT 0,
-//     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-//     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-// )");
+$conn->query("CREATE TABLE IF NOT EXISTS login_codes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    code VARCHAR(6) NOT NULL,
+    expires_at DATETIME,
+    is_used BOOLEAN DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)");
+
+// SETTINGS table
+$conn->query("CREATE TABLE IF NOT EXISTS settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(255) NOT NULL,
+    setting_value TEXT NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)");
 
 // echo "✅ All tables created successfully.";
 // $conn->close();

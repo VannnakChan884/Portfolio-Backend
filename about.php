@@ -1,16 +1,142 @@
 <?php include 'includes/header.php'; ?>
+<?php
+// Add/Edit Logic
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = trim($_POST['title']);
+    $description = trim($_POST['description']);
+    $lang = $_POST['lang'] ?? 'en';
+
+    if ($title && $description) {
+        if (!empty($_POST['about_id'])) {
+            // Edit
+            $id = intval($_POST['about_id']);
+            $stmt = $conn->prepare("UPDATE about SET title = ?, description = ?, lang = ?, updated_at = NOW() WHERE id = ?");
+            $stmt->bind_param("sssi", $title, $description, $lang, $id);
+            if ($stmt->execute()) {
+                $_SESSION['success'] = "About section updated successfully.";
+            } else {
+                $_SESSION['error'] = "Failed to update about section.";
+            }
+        } else {
+            // Add
+            $stmt = $conn->prepare("INSERT INTO about (title, description, lang) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $title, $description, $lang);
+            if ($stmt->execute()) {
+                $_SESSION['success'] = "About section added successfully.";
+            } else {
+                $_SESSION['error'] = "Failed to add about section.";
+            }
+        }
+    } else {
+        $_SESSION['error'] = "All fields are required.";
+    }
+
+    header("Location: about.php");
+    exit;
+}
+
+// Handle Delete
+if (isset($_GET['delete_about'])) {
+    $id = intval($_GET['delete_about']);
+    $conn->query("DELETE FROM about WHERE id = $id");
+    $_SESSION['success'] = "About section deleted.";
+    header("Location: about.php");
+    exit;
+}
+
+// Handle Edit Data Load
+$editData = null;
+if (isset($_GET['edit'])) {
+    $edit_id = intval($_GET['edit']);
+    $result = $conn->query("SELECT * FROM about WHERE id = $edit_id");
+    if ($result && $result->num_rows > 0) {
+        $editData = $result->fetch_assoc();
+    } else {
+        $_SESSION['error'] = "Invalid About ID.";
+        header("Location: about.php");
+        exit;
+    }
+}
+
+// Fetch all abouts
+$aboutResult = $conn->query("SELECT * FROM about ORDER BY created_at DESC");
+?>
 <div class="flex min-h-screen">
     <!-- Sidebar -->
     <?php include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
-        <?php  include 'includes/topbar.php'; ?>
+        <?php include 'includes/topbar.php'; ?>
         <div class="max-w-full mx-auto bg-white p-6 rounded shadow">
             <?php include 'components/back-button.php'; ?>
 
             <div class="my-6">
-                <h2 class="text-2xl font-bold">Edit About Section</h2>
+                <h2 class="text-2xl font-bold"><?= $editData ? 'Edit About' : 'Add About' ?> Section</h2>
+
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="bg-green-100 text-green-700 p-2 rounded mb-4">
+                        <?= htmlspecialchars($_SESSION['success']) ?>
+                    </div>
+                    <?php unset($_SESSION['success']); ?>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="bg-red-100 text-red-700 p-2 rounded mb-4">
+                        <?= htmlspecialchars($_SESSION['error']) ?>
+                    </div>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
+
+                <!-- Add/Edit Form -->
+                <form method="POST" class="my-6 space-y-4 max-w-3xl">
+                    <?php if ($editData): ?>
+                        <input type="hidden" name="about_id" value="<?= $editData['id'] ?>">
+                    <?php endif; ?>
+
+                    <input type="text" name="title" placeholder="About Title" required class="w-full p-2 border rounded"
+                        value="<?= htmlspecialchars($editData['title'] ?? '') ?>">
+
+                    <textarea name="description" placeholder="Description" required class="w-full p-2 border rounded"><?= htmlspecialchars($editData['description'] ?? '') ?></textarea>
+
+                    <select name="lang" class="p-2 border rounded">
+                        <option value="en" <?= (isset($editData['lang']) && $editData['lang'] == 'en') ? 'selected' : '' ?>>English</option>
+                        <option value="kh" <?= (isset($editData['lang']) && $editData['lang'] == 'kh') ? 'selected' : '' ?>>Khmer</option>
+                    </select>
+
+                    <div class="flex gap-4 items-center">
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            <?= $editData ? 'Update' : 'Add' ?> About
+                        </button>
+                        <?php if ($editData): ?>
+                            <a href="about.php" class="text-gray-600 underline">Cancel Edit</a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+
+                <!-- List of About -->
+                <table class="w-full border text-sm">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="p-2 border">Title</th>
+                            <th class="p-2 border">Language</th>
+                            <th class="p-2 border">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $aboutResult->fetch_assoc()): ?>
+                            <tr class="text-center border-b">
+                                <td class="p-2 border"><?= htmlspecialchars($row['title']) ?></td>
+                                <td class="p-2 border"><?= htmlspecialchars($row['lang']) ?></td>
+                                <td class="p-2 border">
+                                    <a href="experiences.php?about_id=<?= $row['id'] ?>" class="text-green-600 hover:underline">Experiences</a> |
+                                    <a href="?edit=<?= $row['id'] ?>" class="text-blue-600 hover:underline">Edit</a> |
+                                    <a href="?delete_about=<?= $row['id'] ?>" onclick="return confirm('Delete this about?')" class="text-red-600 hover:underline">Delete</a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
             </div>
 
             <div class="mt-6 text-sm">

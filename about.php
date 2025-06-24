@@ -117,21 +117,29 @@ $aboutResult = $conn->query("SELECT * FROM about ORDER BY created_at DESC");
                 <!-- List of About -->
                 <table class="w-full border text-sm">
                     <thead class="bg-gray-200">
-                        <tr>
+                        <tr class="text-left">
                             <th class="p-2 border">Title</th>
+                            <th class="p-2 border">Description</th>
                             <th class="p-2 border">Language</th>
-                            <th class="p-2 border">Actions</th>
+                            <th class="text-center p-2 border">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = $aboutResult->fetch_assoc()): ?>
-                            <tr class="text-center border-b">
+                            <tr class="border-b">
                                 <td class="p-2 border"><?= htmlspecialchars($row['title']) ?></td>
+                                <td class="p-2 border"><?= htmlspecialchars($row['description']) ?></td>
                                 <td class="p-2 border"><?= htmlspecialchars($row['lang']) ?></td>
-                                <td class="p-2 border">
-                                    <a href="experiences.php?about_id=<?= $row['id'] ?>" class="text-green-600 hover:underline">Experiences</a> |
-                                    <a href="?edit=<?= $row['id'] ?>" class="text-blue-600 hover:underline">Edit</a> |
-                                    <a href="?delete_about=<?= $row['id'] ?>" onclick="return confirm('Delete this about?')" class="text-red-600 hover:underline">Delete</a>
+                                <td class="text-center p-2 border">
+                                    <a href="experiences.php?about_id=<?= $row['id'] ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-green-100 text-green-600 mr-2">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                    </a>
+                                    <a href="?edit=<?= $row['id'] ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="?delete_about=<?= $row['id'] ?>" onclick="return confirm('Delete this about?')" class="inline-block text-sm px-2 py-1 rounded bg-red-100 text-red-600">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>

@@ -123,9 +123,13 @@
                         <td class="p-2 border dark:border-gray-500"><?= $exp['start_date'] ?></td>
                         <td class="p-2 border dark:border-gray-500"><?= $exp['end_date'] ?></td>
                         <td class="p-2 border dark:border-gray-500"><?= htmlspecialchars($exp['description']) ?></td>
-                        <td class="p-2 border dark:border-gray-500">
-                            <a href="experiences.php?edit=<?= $exp['id'] ?>&about_id=<?= $about_id ?>" class="text-blue-600 hover:underline">Edit</a> |
-                            <a href="?delete=<?= $exp['id'] ?>&about_id=<?= $about_id ?>" onclick="return confirm('Delete this experience?')" class="text-red-600 hover:underline">Delete</a>
+                        <td class="p-2 border dark:border-gray-500 text-center">
+                            <a href="experiences.php?edit=<?= $exp['id'] ?>&about_id=<?= $about_id ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a href="?delete=<?= $exp['id'] ?>&about_id=<?= $about_id ?>" onclick="return confirm('Delete this experience?')" class="inline-block text-sm px-2 py-1 rounded bg-red-100 text-red-600">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
                         </td>
                     </tr>
                 <?php endwhile; ?>

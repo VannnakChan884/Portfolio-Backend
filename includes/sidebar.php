@@ -4,7 +4,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 
 <aside id="sidebar" class="sticky top-0 h-screen bg-white dark:bg-gray-800 shadow-xl transition-all duration-300 ease-in-out overflow-hidden w-1/3 xl:w-1/6 lg:w-1/4">
-    <nav class="uppercase">
+    <nav>
         <div class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 py-4 px-4">
             <h2 class="menu-title text-2xl font-bold capitalize">Portfolio - <?= htmlspecialchars($userName) ?></h2>
             <button id="toggleSidebar" class="flex items-center justify-center w-10 h-10 hover:bg-gray-300/50 p-2 text-xl rounded-lg" title="Toggle Menu">

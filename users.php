@@ -210,11 +210,11 @@
                             <td class="p-2 border"><?= $user['updated_at'] ?? '—' ?></td>
                             <td class="p-2 border text-center">
                                 <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'])) ?>&role=<?= urlencode(trim($user['role'])) ?>"
-                                    class="text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
+                                    class="inline-block  text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
                                     <i class="fa-solid fa-user-pen"></i>
                                 </a>
                                 <a href="?delete=<?= $user['id'] ?>" onclick="return confirm('Are you sure? You want to delete this user?')"
-                                    class="text-sm px-2 py-1 rounded bg-red-100 text-red-600">
+                                    class="inline-block text-sm px-2 py-1 rounded bg-red-100 text-red-600">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
                             </td>

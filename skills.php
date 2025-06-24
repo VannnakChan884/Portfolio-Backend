@@ -194,10 +194,10 @@
                             </div>
                         </td>
                         <td class="p-2 border">
-                            <a href="?edit=<?= $row['id'] ?>&lang=<?= htmlspecialchars($lang) ?>" class="text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
+                            <a href="?edit=<?= $row['id'] ?>&lang=<?= htmlspecialchars($lang) ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <a href="?delete=<?= $row['id'] ?>&lang=<?= htmlspecialchars($lang) ?>" onclick="return confirm('Are you sure? You want to delete this skill?')" class="text-sm px-2 py-1 rounded bg-red-100 text-red-600">
+                            <a href="?delete=<?= $row['id'] ?>&lang=<?= htmlspecialchars($lang) ?>" onclick="return confirm('Are you sure? You want to delete this skill?')" class="inline-block text-sm px-2 py-1 rounded bg-red-100 text-red-600">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                         </td>

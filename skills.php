@@ -101,7 +101,7 @@
     <!-- Main Content -->
     <main class="flex-1 p-6">
         <?php  include 'includes/topbar.php'; ?>
-        <div class="max-w-full mx-auto bg-white p-6 rounded shadow">
+        <div class="max-w-full mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow">
             <?php include 'components/back-button.php'; ?>
         
             <!-- Skill Form -->
@@ -126,12 +126,12 @@
                 <?php endif; ?>
 
                 <label class="flex flex-col">
-                    <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Skill</span>
-                    <input class="border p-2 rounded" type="text" name="title" placeholder="Skill Title" required value="<?= htmlspecialchars($editSkill['title'] ?? '') ?>">
+                    <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Skill</span>
+                    <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="text" name="title" placeholder="Skill Title" required value="<?= htmlspecialchars($editSkill['title'] ?? '') ?>">
                 </label>
                 <label class="flex flex-col">
-                    <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Level</span>
-                    <input class="border p-2 rounded" type="number" name="percentage" placeholder="Percentage (0-100)" required value="<?= htmlspecialchars($editSkill['percentage'] ?? '') ?>">
+                    <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Level</span>
+                    <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="number" name="percentage" placeholder="Percentage (0-100)" required value="<?= htmlspecialchars($editSkill['percentage'] ?? '') ?>">
                 </label>
                 
                 <button name="<?= $editSkill ? 'update_skill' : 'add_skill' ?>" type="submit"
@@ -143,26 +143,26 @@
             <!-- Search Bar -->
             <form method="get" class="mb-4 flex flex-col sm:flex-row sm:items-center">
                 <input type="hidden" name="lang" value="<?= htmlspecialchars($lang) ?>">
-                <input class="border p-2 rounded-l w-full max-w-sm mb-2 sm:mb-0" type="text" name="search" placeholder="Search skills..." value="<?= htmlspecialchars($search) ?>">
-                <button type="submit" class="bg-gray-200/50 text-gray-500 py-2 px-4 rounded-r border-y border-r hover:bg-gray-200/70 whitespace-nowrap">
+                <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded-l w-full max-w-sm mb-2 sm:mb-0" type="text" name="search" placeholder="Search skills..." value="<?= htmlspecialchars($search) ?>">
+                <button type="submit" class="bg-gray-200/50 dark:bg-gray-700 text-gray-500 dark:text-gray-300 py-2 px-4 rounded-r border-y border-r dark:border-gray-600 hover:bg-gray-200/70 dark:hover:bg-gray-600">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </form>
 
             <!-- Skills Table -->
-            <table class="w-full border">
-                <thead class="bg-gray-100">
+            <table class="w-full border border-collape">
+                <thead class="bg-gray-100 dark:bg-gray-700">
                 <tr>
-                    <th class="p-2 border">Title</th>
-                    <th class="p-2 border">Percentage</th>
-                    <th class="p-2 border">Actions</th>
+                    <th class="p-2 border dark:border-gray-600">Title</th>
+                    <th class="p-2 border dark:border-gray-600">Percentage</th>
+                    <th class="p-2 border dark:border-gray-600">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php while ($row = $skills->fetch_assoc()): ?>
                     <tr class="text-center border-b <?= $editSkill && $editSkill['id'] == $row['id'] ? 'bg-yellow-100' : '' ?>">
-                        <td class="p-2 border"><?= htmlspecialchars($row['title']) ?></td>
-                        <td class="p-2 border">
+                        <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($row['title']) ?></td>
+                        <td class="p-2 border dark:border-gray-600">
                             <?php
                                 $percent = intval($row['percentage']);
                                 $colorClass = 'bg-blue-500';
@@ -193,7 +193,7 @@
                                 <?php endif; ?>
                             </div>
                         </td>
-                        <td class="p-2 border">
+                        <td class="p-2 border dark:border-gray-600">
                             <a href="?edit=<?= $row['id'] ?>&lang=<?= htmlspecialchars($lang) ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>

@@ -74,7 +74,7 @@
     <!-- Main Content -->
     <main class="flex-1 p-6">
         <?php  include 'includes/topbar.php'; ?>
-        <div class="max-w-full mx-auto bg-white p-6 rounded shadow">
+        <div class="max-w-full mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow">
             <?php include 'components/back-button.php'; ?>
 
             <form method="post" enctype="multipart/form-data" class="grid grid-cols-1 gap-4 my-6 max-w-3xl">
@@ -86,17 +86,17 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <label class="flex flex-col">
-                        <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Project</span>
-                        <input class="border p-2 rounded" type="text" name="title" placeholder="Project Title" required value="<?= $editProject['title'] ?? '' ?>">
+                        <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Project</span>
+                        <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="text" name="title" placeholder="Project Title" required value="<?= $editProject['title'] ?? '' ?>">
                     </label>
                     <label class="flex flex-col">
-                        <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Link</span>
-                        <input class="border p-2 rounded" type="text" name="project_link" placeholder="Project Link" value="<?= $editProject['project_link'] ?? '' ?>">
+                        <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Link</span>
+                        <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="text" name="project_link" placeholder="Project Link" value="<?= $editProject['project_link'] ?? '' ?>">
                     </label>
                 </div>
                 <label class="flex flex-col">
-                    <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Description</span>
-                    <textarea class="border p-2 rounded" name="description" rows="3" placeholder="Description"><?= $editProject['description'] ?? '' ?></textarea>
+                    <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Description</span>
+                    <textarea class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" name="description" rows="3" placeholder="Description"><?= $editProject['description'] ?? '' ?></textarea>
                 </label>
 
                 <?php if (!empty($editProject['image'])): ?>
@@ -105,9 +105,9 @@
 
                 <!-- Upload Box -->
                 <div id="uploadBox"
-                    class="border-2 border-dashed border-gray-300 bg-gray-50 text-center rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                    class="border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-center rounded-lg cursor-pointer hover:bg-gray-100 transition">
                     <label for="image" class="block p-6 cursor-pointer">
-                        <span class="block text-gray-700">Drag & drop your files here or
+                        <span class="block text-gray-700 dark:text-gray-500">Drag & drop your files here or
                             <span class="text-blue-600 underline">browse</span></span>
                         <input id="image" type="file" name="image" accept="image/*" class="hidden">
                         <p class="text-xs text-gray-500 mt-2">File must be .jpg .jpeg .png .gif .bmp</p>
@@ -121,26 +121,26 @@
 
             <h3 class="text-lg font-semibold mb-2">Project List</h3>
             <div class="overflow-x-auto">
-                <table class="w-full border text-sm">
-                    <thead class="bg-gray-100">
+                <table class="w-full border border-collape text-sm">
+                    <thead class="bg-gray-100 dark:bg-gray-700">
                         <tr>
-                            <th class="p-2 border">Title</th>
-                            <th class="p-2 border">Image</th>
-                            <th class="p-2 border">Link</th>
-                            <th class="p-2 border">Actions</th>
+                            <th class="p-2 border dark:border-gray-600">Title</th>
+                            <th class="p-2 border dark:border-gray-600">Image</th>
+                            <th class="p-2 border dark:border-gray-600">Link</th>
+                            <th class="p-2 border dark:border-gray-600">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = $projects->fetch_assoc()): ?>
                             <tr class="text-center border-b">
-                                <td class="p-2 border"><?= $row['title'] ?></td>
-                                <td class="p-2 border">
+                                <td class="p-2 border dark:border-gray-600"><?= $row['title'] ?></td>
+                                <td class="p-2 border dark:border-gray-600">
                                     <?php if ($row['image']): ?>
                                         <img src="<?= $row['image'] ?>" width="60" class="mx-auto rounded">
                                     <?php endif; ?>
                                 </td>
-                                <td class="p-2 border"><a href="<?= $row['project_link'] ?>" class="text-blue-600" target="_blank">View</a></td>
-                                <td class="p-2 border">
+                                <td class="p-2 border dark:border-gray-600"><a href="<?= $row['project_link'] ?>" class="text-blue-600" target="_blank">View</a></td>
+                                <td class="p-2 border dark:border-gray-600">
                                     <a href="?edit=<?= $row['id'] ?>&lang=<?= $lang ?>" class="text-blue-600 hover:underline">Edit</a> |
                                     <a href="?delete=<?= $row['id'] ?>&lang=<?= $lang ?>" onclick="return confirm('Are you sure?')" class="text-red-600 hover:underline">Delete</a>
                                 </td>

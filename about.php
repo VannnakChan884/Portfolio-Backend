@@ -68,7 +68,7 @@ $aboutResult = $conn->query("SELECT * FROM about ORDER BY created_at DESC");
     <!-- Main Content -->
     <main class="flex-1 p-6">
         <?php include 'includes/topbar.php'; ?>
-        <div class="max-w-full mx-auto bg-white p-6 rounded shadow">
+        <div class="max-w-full mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow">
             <?php include 'components/back-button.php'; ?>
 
             <div class="my-6">
@@ -94,12 +94,12 @@ $aboutResult = $conn->query("SELECT * FROM about ORDER BY created_at DESC");
                         <input type="hidden" name="about_id" value="<?= $editData['id'] ?>">
                     <?php endif; ?>
 
-                    <input type="text" name="title" placeholder="About Title" required class="w-full p-2 border rounded"
+                    <input type="text" name="title" placeholder="About Title" required class="w-full dark:bg-gray-700 p-2 border dark:border-gray-600 rounded"
                         value="<?= htmlspecialchars($editData['title'] ?? '') ?>">
 
-                    <textarea name="description" placeholder="Description" required class="w-full p-2 border rounded"><?= htmlspecialchars($editData['description'] ?? '') ?></textarea>
+                    <textarea name="description" placeholder="Description" required class="w-full dark:bg-gray-700 p-2 border dark:border-gray-600 rounded"><?= htmlspecialchars($editData['description'] ?? '') ?></textarea>
 
-                    <select name="lang" class="p-2 border rounded">
+                    <select name="lang" class="w-full dark:bg-gray-700 p-2 border dark:border-gray-600 rounded">
                         <option value="en" <?= (isset($editData['lang']) && $editData['lang'] == 'en') ? 'selected' : '' ?>>English</option>
                         <option value="kh" <?= (isset($editData['lang']) && $editData['lang'] == 'kh') ? 'selected' : '' ?>>Khmer</option>
                     </select>
@@ -115,22 +115,22 @@ $aboutResult = $conn->query("SELECT * FROM about ORDER BY created_at DESC");
                 </form>
 
                 <!-- List of About -->
-                <table class="w-full border text-sm">
-                    <thead class="bg-gray-200">
+                <table class="w-full border border-collape text-sm">
+                    <thead class="bg-gray-200 dark:bg-gray-700">
                         <tr class="text-left">
-                            <th class="p-2 border">Title</th>
-                            <th class="p-2 border">Description</th>
-                            <th class="p-2 border">Language</th>
-                            <th class="text-center p-2 border">Actions</th>
+                            <th class="p-2 border dark:border-gray-600">Title</th>
+                            <th class="p-2 border dark:border-gray-600">Description</th>
+                            <th class="p-2 border dark:border-gray-600">Language</th>
+                            <th class="text-center p-2 border dark:border-gray-600">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = $aboutResult->fetch_assoc()): ?>
                             <tr class="border-b">
-                                <td class="p-2 border"><?= htmlspecialchars($row['title']) ?></td>
-                                <td class="p-2 border"><?= htmlspecialchars($row['description']) ?></td>
-                                <td class="p-2 border"><?= htmlspecialchars($row['lang']) ?></td>
-                                <td class="text-center p-2 border">
+                                <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($row['title']) ?></td>
+                                <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($row['description']) ?></td>
+                                <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($row['lang']) ?></td>
+                                <td class="text-center p-2 border dark:border-gray-600">
                                     <a href="experiences.php?about_id=<?= $row['id'] ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-green-100 text-green-600 mr-2">
                                         <i class="fa-solid fa-briefcase"></i>
                                     </a>

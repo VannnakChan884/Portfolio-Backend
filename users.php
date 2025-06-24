@@ -69,7 +69,7 @@
     <main class="flex-1 p-6">
         <?php  include 'includes/topbar.php'; ?>
        
-        <div class="max-w-full mx-auto bg-white p-6 rounded shadow">
+        <div class="max-w-full mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow">
             <?php include 'components/back-button.php'; ?>
 
             <form method="POST" enctype="multipart/form-data" class="my-6 grid grid-cols-1 gap-4 max-w-3xl">
@@ -92,19 +92,19 @@
                 <!-- Text Inputs -->
                 <div class="grid grid-cols-2 gap-x-4">
                     <label class="flex flex-col">
-                        <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Username</span>
-                        <input class="border p-2 rounded" type="text" name="username" placeholder="Username" value="<?= $_GET['username'] ?? '' ?>" required>
+                        <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Username</span>
+                        <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="text" name="username" placeholder="Username" value="<?= $_GET['username'] ?? '' ?>" required>
                     </label>
                     <label class="flex flex-col">
-                        <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Full Name</span>
-                        <input class="border p-2 rounded" type="text" name="full_name" placeholder="Your Name" value="<?= $_GET['full_name'] ?? '' ?>" required>
+                        <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Full Name</span>
+                        <input class="dark:bg-gray-700 border dark:border-gray-600 rounded" type="text" name="full_name" placeholder="Your Name" value="<?= $_GET['full_name'] ?? '' ?>" required>
                     </label>
                 </div>
 
                 <div class="grid grid-cols-2 gap-x-4">
                     <label class="flex flex-col">
                         <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Email</span>
-                        <input class="border p-2 rounded" type="email" name="email" placeholder="you@example.com" value="<?= $_GET['email'] ?? '' ?>" required>
+                        <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="email" name="email" placeholder="you@example.com" value="<?= $_GET['email'] ?? '' ?>" required>
                     </label>
                 
                     <?php
@@ -113,7 +113,7 @@
                     ?>
                     <label class="flex flex-col">
                         <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Role</span>
-                        <select name="role" class="border p-2 rounded" required>
+                        <select name="role" class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" required>
                             <option value="admin" <?= $selectedRole === 'admin' ? 'selected' : '' ?>>Admin</option>
                             <option value="user" <?= $selectedRole === 'user' ? 'selected' : '' ?>>User</option>
                         </select>
@@ -124,9 +124,9 @@
 
                 <!-- Upload Box -->
                 <div id="uploadBox"
-                    class="border-2 border-dashed border-gray-300 bg-gray-50 text-center rounded-lg cursor-pointer hover:bg-gray-100 transition <?= isset($_GET['user_profile']) ? 'hidden' : '' ?>">
+                    class="dark:bg-gray-700 dark:border-gray-600 border-2 border-dashed border-gray-300 bg-gray-50 text-center rounded-lg cursor-pointer hover:bg-gray-100 transition <?= isset($_GET['user_profile']) ? 'hidden' : '' ?>">
                     <label for="user_profile" class="block p-6 cursor-pointer">
-                        <span class="block text-gray-700">Drag & drop your files here or
+                        <span class="block text-gray-700 dark:text-gray-300">Drag & drop your files here or
                             <span class="text-blue-600 underline">browse</span></span>
                         <input id="user_profile" type="file" name="user_profile" accept="image/*" class="hidden">
                         <p class="text-xs text-gray-500 mt-2">File must be .jpg .jpeg .png .gif .bmp</p>
@@ -149,7 +149,7 @@
                         <button name="update_user" type="submit" class="bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700 disabled:opacity-50 disabled:pointer-events-none">Update User</button>
                     <?php else: ?>
                         <!-- Password field shown only in add mode -->
-                        <input class="border p-2 rounded flex-1" type="password" name="password" placeholder="Password" required minlength="6">
+                        <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded flex-1" type="password" name="password" placeholder="Password" required minlength="6">
                         <!-- File Button (visible only after upload or image already exists) -->
                         <div id="fileActionBtn" class="<?= isset($_GET['user_profile']) ? '' : 'hidden' ?>">
                             <?php if (!isset($_GET['edit'])): ?>
@@ -167,30 +167,30 @@
             </form>
 
             <h3 class="text-lg font-semibold mb-2">Existing Users</h3>
-            <table class="w-full border">
-                <thead class="bg-gray-100">
+            <table class="w-full border border-collape">
+                <thead class="bg-gray-100 dark:bg-gray-700">
                     <tr>
-                        <th class="p-2 border">Username</th>
-                        <th class="p-2 border">Email</th>
-                        <th class="p-2 border">Full Name</th>
-                        <th class="p-2 border">Profile</th>
-                        <th class="p-2 border">Role</th>
-                        <th class="p-2 border">Created At</th>
-                        <th class="p-2 border">Updated At</th>
-                        <th class="p-2 border">Actions</th>
+                        <th class="p-2 border dark:border-gray-600">Username</th>
+                        <th class="p-2 border dark:border-gray-600">Email</th>
+                        <th class="p-2 border dark:border-gray-600">Full Name</th>
+                        <th class="p-2 border dark:border-gray-600">Profile</th>
+                        <th class="p-2 border dark:border-gray-600">Role</th>
+                        <th class="p-2 border dark:border-gray-600">Created At</th>
+                        <th class="p-2 border dark:border-gray-600">Updated At</th>
+                        <th class="p-2 border dark:border-gray-600">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php while ($user = $users->fetch_assoc()): ?>
                         <tr class="border-b">
-                            <td class="p-2 border"><?= htmlspecialchars($user['username']) ?></td>
-                            <td class="p-2 border"><?= htmlspecialchars($user['email']) ?></td>
-                            <td class="p-2 border"><?= htmlspecialchars($user['full_name']) ?></td>
-                            <td class="p-2 border">
+                            <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($user['username']) ?></td>
+                            <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($user['email']) ?></td>
+                            <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($user['full_name']) ?></td>
+                            <td class="p-2 border dark:border-gray-600">
                                 <img src="<?= htmlspecialchars($user['user_profile'] ?: 'assets/uploads/default.png') ?>"
                                     alt="Profile" class="w-10 h-10 rounded-full mx-auto object-cover">
                             </td>
-                            <td class="p-2 border text-center">
+                            <td class="p-2 border dark:border-gray-600 text-center">
                                 <?php if (empty($user['role'])): ?>
                                     <form method="POST" class="flex items-center gap-2">
                                         <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
@@ -206,9 +206,9 @@
                                         class="text-sm px-2 py-1 rounded bg-blue-100 text-blue-600"><?= htmlspecialchars($user['role']) ?></span>
                                 <?php endif; ?>
                             </td>
-                            <td class="p-2 border"><?= $user['created_at'] ?></td>
-                            <td class="p-2 border"><?= $user['updated_at'] ?? '—' ?></td>
-                            <td class="p-2 border text-center">
+                            <td class="p-2 border dark:border-gray-600"><?= $user['created_at'] ?></td>
+                            <td class="p-2 border dark:border-gray-600"><?= $user['updated_at'] ?? '—' ?></td>
+                            <td class="p-2 border dark:border-gray-600 text-center">
                                 <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'])) ?>&role=<?= urlencode(trim($user['role'])) ?>"
                                     class="inline-block  text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
                                     <i class="fa-solid fa-user-pen"></i>

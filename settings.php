@@ -43,7 +43,7 @@
     <!-- Main Content -->
     <main class="flex-1 p-6">
         <?php  include 'includes/topbar.php'; ?>
-        <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+        <div class="max-w-full mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow">
             <h2 class="text-2xl font-bold mb-4">General Settings</h2>
 
             <?php if (isset($_SESSION['success'])): ?>
@@ -53,22 +53,22 @@
                 <?php unset($_SESSION['success']); ?>
             <?php endif; ?>
 
-            <form method="POST" enctype="multipart/form-data" class="space-y-4 my-6">
-                <input type="text" name="site_title" placeholder="Site Title" value="<?= $settings['site_title'] ?? '' ?>" class="w-full p-2 border rounded">
+            <form method="POST" enctype="multipart/form-data" class="space-y-4 my-6 max-w-3xl">
+                <input type="text" name="site_title" placeholder="Site Title" value="<?= $settings['site_title'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="email" name="email" placeholder="Email" value="<?= $settings['email'] ?? '' ?>" class="w-full p-2 border rounded">
+                <input type="email" name="email" placeholder="Email" value="<?= $settings['email'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="text" name="phone" placeholder="Phone" value="<?= $settings['phone'] ?? '' ?>" class="w-full p-2 border rounded">
+                <input type="text" name="phone" placeholder="Phone" value="<?= $settings['phone'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <textarea name="description" placeholder="Site Description" class="w-full p-2 border rounded"><?= $settings['description'] ?? '' ?></textarea>
+                <textarea name="description" placeholder="Site Description" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded"><?= $settings['description'] ?? '' ?></textarea>
 
-                <input type="text" name="facebook" placeholder="Facebook URL" value="<?= $settings['facebook'] ?? '' ?>" class="w-full p-2 border rounded">
+                <input type="text" name="facebook" placeholder="Facebook URL" value="<?= $settings['facebook'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="text" name="telegram" placeholder="Telegram URL" value="<?= $settings['telegram'] ?? '' ?>" class="w-full p-2 border rounded">
+                <input type="text" name="telegram" placeholder="Telegram URL" value="<?= $settings['telegram'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="text" name="Github" placeholder="Github URL" value="<?= $settings['github'] ?? '' ?>" class="w-full p-2 border rounded">
+                <input type="text" name="Github" placeholder="Github URL" value="<?= $settings['github'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="file" name="logo" class="w-full p-2 border rounded">
+                <input type="file" name="logo" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
                 <?php if (!empty($settings['logo'])): ?>
                     <img src="<?= $settings['logo'] ?>" alt="Logo" class="w-32 h-auto mt-2">
                 <?php endif; ?>

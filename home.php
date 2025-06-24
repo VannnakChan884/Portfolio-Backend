@@ -56,30 +56,30 @@
     <!-- Main Content -->
     <main class="flex-1 p-6">
         <?php  include 'includes/topbar.php'; ?>
-        <div class="max-w-full mx-auto bg-white p-6 rounded shadow">
+        <div class="max-w-full mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow">
             <?php include 'components/back-button.php'; ?>
 
             <form method="post" enctype="multipart/form-data" class="space-y-4 max-w-3xl my-6">
                 <h2 class="text-2xl font-bold">Edit Home Section (<?= strtoupper($lang) ?>)</h2>
                 <input type="hidden" name="lang" value="<?= $lang ?>">
                 <label class="flex flex-col">
-                    <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Name</span>
-                    <input type="text" name="name" value="<?= $data['name'] ?? '' ?>" required class="w-full border border-gray-300 rounded px-3 py-2">
+                    <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Name</span>
+                    <input type="text" name="name" value="<?= $data['name'] ?? '' ?>" required class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2">
                 </label>
                 <label class="flex flex-col">
-                    <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Title</span>
-                    <input type="text" name="title" value="<?= $data['title'] ?? '' ?>" required class="w-full border border-gray-300 rounded px-3 py-2">
+                    <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Title</span>
+                    <input type="text" name="title" value="<?= $data['title'] ?? '' ?>" required class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2">
                 </label>
                 <label class="flex flex-col">
-                    <span class="text-gray-700 after:ml-0.5 after:text-red-500">Bio</span>
-                    <textarea name="bio" rows="4" class="w-full border border-gray-300 rounded px-3 py-2"><?= $data['bio'] ?? '' ?></textarea>
+                    <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500">Bio</span>
+                    <textarea name="bio" rows="4" class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2"><?= $data['bio'] ?? '' ?></textarea>
                 </label>
                 <div>
-                    <label class="block font-semibold mb-1">Profile Image:</label>
+                    <label class="block font-semibold mb-1 text-gray-700 dark:text-gray-300">Profile Image:</label>
                     <?php if (!empty($data['profile_image'])): ?>
                         <img src="<?= $data['profile_image'] ?>" width="100" class="mb-2 rounded">
                     <?php endif; ?>
-                    <input type="file" name="profile_image" class="block w-full text-sm text-gray-500">
+                    <input type="file" name="profile_image" class="block w-full p-2 rounded dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm text-gray-500">
                 </div>
 
                 <button type="submit"
@@ -91,8 +91,8 @@
             <div class="mt-6 text-sm">
                 <p class="mb-2 font-medium">Switch Language:</p>
                 <div class="space-x-2">
-                    <a href="?lang=en" class="text-blue-600 hover:underline">English</a>
-                    <a href="?lang=kh" class="text-blue-600 hover:underline">Khmer</a>
+                    <a href="?lang=en" class="text-blue-600 hover:underline">English </a>|
+                    <a href="?lang=kh" class="text-blue-600 hover:underline">Khmer </a>|
                     <a href="?lang=zh" class="text-blue-600 hover:underline">Chinese</a>
                 </div>
             </div>

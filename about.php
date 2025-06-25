@@ -97,7 +97,7 @@ $aboutResult = $conn->query("SELECT * FROM about ORDER BY created_at DESC");
                     <input type="text" name="title" placeholder="About Title" required class="w-full dark:bg-gray-700 p-2 border dark:border-gray-600 rounded"
                         value="<?= htmlspecialchars($editData['title'] ?? '') ?>">
 
-                    <textarea name="description" placeholder="Description" required class="w-full dark:bg-gray-700 p-2 border dark:border-gray-600 rounded"><?= htmlspecialchars($editData['description'] ?? '') ?></textarea>
+                    <textarea name="description" placeholder="Description" class="w-full dark:bg-gray-700 p-2 border dark:border-gray-600 rounded"><?= htmlspecialchars($editData['description'] ?? '') ?></textarea>
 
                     <select name="lang" class="w-full dark:bg-gray-700 p-2 border dark:border-gray-600 rounded">
                         <option value="en" <?= (isset($editData['lang']) && $editData['lang'] == 'en') ? 'selected' : '' ?>>English</option>

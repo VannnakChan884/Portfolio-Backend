@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 require_once '../includes/db.php';
 
 $sql = " SELECT  a.id AS about_id, a.title AS about_title, a.description AS about_description, a.lang, e.id AS exp_id, e.title AS exp_title, e.company, e.start_date, e.end_date, e.description AS exp_description
-FROM about a LEFT JOIN experiences e ON a.id = e.about_id ORDER BY a.id DESC, e.start_date DESC";
+FROM about a LEFT JOIN experiences e ON a.id = e.about_id ORDER BY a.id DESC, e.`order` ASC";
 $result = $conn->query($sql);
 
 $aboutData = [];

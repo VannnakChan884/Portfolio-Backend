@@ -79,14 +79,14 @@
                 <?php if ($editExp): ?>
                     <input type="hidden" name="experience_id" value="<?= $editExp['id'] ?>">
                 <?php endif; ?>
-                <input type="text" name="title" placeholder="Position Title" class="w-full dark:bg-gray-700 p-2 border dark:border-gray-800 rounded" required
+                <input type="text" name="title" placeholder="Position Title" class="w-full dark:bg-gray-700 p-2 border dark:border-gray-800 rounded"
                     value="<?= htmlspecialchars($editExp['title'] ?? '') ?>">
 
-                <input type="text" name="company" placeholder="Company Name" class="w-full dark:bg-gray-700 p-2 border dark:border-gray-800 rounded" required
+                <input type="text" name="company" placeholder="Company Name" class="w-full dark:bg-gray-700 p-2 border dark:border-gray-800 rounded"
                     value="<?= htmlspecialchars($editExp['company'] ?? '') ?>">
 
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="date" name="start_date" class="dark:bg-gray-700 p-2 border dark:border-gray-800 rounded w-full" required
+                    <input type="date" name="start_date" class="dark:bg-gray-700 p-2 border dark:border-gray-800 rounded w-full"
                         value="<?= htmlspecialchars($editExp['start_date'] ?? '') ?>">
 
                     <input type="date" name="end_date" class="dark:bg-gray-700 p-2 border dark:border-gray-800 rounded w-full"

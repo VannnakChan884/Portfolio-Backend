@@ -75,6 +75,12 @@ $conn->query("CREATE TABLE IF NOT EXISTS experiences (
     FOREIGN KEY (about_id) REFERENCES about(id) ON DELETE CASCADE
 )");
 
+// Add 'order' column to experiences table if it doesn't exist
+$checkOrderColumn = $conn->query("SHOW COLUMNS FROM experiences LIKE 'order'");
+if ($checkOrderColumn->num_rows === 0) {
+    $conn->query("ALTER TABLE experiences ADD COLUMN `order` INT DEFAULT 0");
+}
+
 // PROJECTS table
 $conn->query("CREATE TABLE IF NOT EXISTS projects (
     id INT AUTO_INCREMENT PRIMARY KEY,

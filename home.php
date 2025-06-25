@@ -4,9 +4,8 @@
 
     // Handle form submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $name = $_POST['name'];
-        $title = $_POST['title'];
-        $bio = $_POST['bio'];
+        $name = trim($_POST['name']);
+        $bio = trim($_POST['bio']);
         $lang = $_POST['lang'];
 
         // Image upload
@@ -14,7 +13,7 @@
         if ($_FILES['profile_image']['name']) {
             $targetDir = "assets/uploads/";
             $filename = basename($_FILES["profile_image"]["name"]);
-            $imagePath = $targetDir . time() . "_" . $filename;
+            $imagePath = $targetDir . $filename;
 
             move_uploaded_file($_FILES["profile_image"]["tmp_name"], $imagePath);
         }
@@ -28,16 +27,16 @@
         if ($check->num_rows > 0) {
             // Update
             if ($imagePath) {
-                $stmt = $conn->prepare("UPDATE home SET name=?, title=?, bio=?, profile_image=? WHERE lang=?");
-                $stmt->bind_param("sssss", $name, $title, $bio, $imagePath, $lang);
+                $stmt = $conn->prepare("UPDATE home SET name=?, bio=?, profile_image=? WHERE lang=?");
+                $stmt->bind_param("ssss", $name, $bio, $imagePath, $lang);
             } else {
-                $stmt = $conn->prepare("UPDATE home SET name=?, title=?, bio=? WHERE lang=?");
-                $stmt->bind_param("ssss", $name, $title, $bio, $lang);
+                $stmt = $conn->prepare("UPDATE home SET name=?, bio=? WHERE lang=?");
+                $stmt->bind_param("sss", $name, $bio, $lang);
             }
         } else {
             // Insert
-            $stmt = $conn->prepare("INSERT INTO home (title, description, profile_image, lang) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("sssss", $name, $title, $imagePath, $lang);
+            $stmt = $conn->prepare("INSERT INTO home (name, bio, profile_image, lang) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $name, $bio, $imagePath, $lang);
         }
 
         $stmt->execute();
@@ -57,18 +56,13 @@
     <main class="flex-1 p-6">
         <?php  include 'includes/topbar.php'; ?>
         <div class="max-w-full mx-auto bg-white dark:bg-gray-800 p-6 rounded shadow">
-            <?php include 'components/back-button.php'; ?>
 
-            <form method="post" enctype="multipart/form-data" class="space-y-4 max-w-3xl my-6">
-                <h2 class="text-2xl font-bold">Edit Home Section (<?= strtoupper($lang) ?>)</h2>
+            <form method="post" enctype="multipart/form-data" class="space-y-4 max-w-3xl mb-6">
+                <h2 class="text-2xl font-bold">Edit Your Home Section</h2>
                 <input type="hidden" name="lang" value="<?= $lang ?>">
                 <label class="flex flex-col">
                     <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Name</span>
                     <input type="text" name="name" value="<?= $data['name'] ?? '' ?>" required class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2">
-                </label>
-                <label class="flex flex-col">
-                    <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Title</span>
-                    <input type="text" name="title" value="<?= $data['title'] ?? '' ?>" required class="w-full dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-3 py-2">
                 </label>
                 <label class="flex flex-col">
                     <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500">Bio</span>
@@ -88,13 +82,12 @@
                 </button>
             </form>
 
-            <div class="mt-6 text-sm">
-                <p class="mb-2 font-medium">Switch Language:</p>
-                <div class="space-x-2">
-                    <a href="?lang=en" class="text-blue-600 hover:underline">English </a>|
-                    <a href="?lang=kh" class="text-blue-600 hover:underline">Khmer </a>|
-                    <a href="?lang=zh" class="text-blue-600 hover:underline">Chinese</a>
-                </div>
+            <div class="flex flex-row gap-4">
+                <?php include 'components/back-button.php'; ?>
+                <a href="skills.php?home_id=<?= $data['id'] ?>" class="flex items-center justify-center gap-2 inline-block text-sm px-2 py-1 mr-2 rounded bg-green-100 text-green-600 mr-2">
+                    <i class="fa-solid fa-briefcase"></i>
+                    Manage Your Skill
+                </a>
             </div>
         </div>
     </main>

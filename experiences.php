@@ -99,7 +99,7 @@
                 </button>
 
                 <?php if ($editExp): ?>
-                    <a href="experiences.php?about_id=<?= $about_id ?>" class="text-gray-600 underline ml-4">Cancel Edit</a>
+                    <a href="experiences.php?about_id=<?= $about_id ?>" class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500 opacity-50">Cancel</a>
                 <?php endif; ?>
             </form>
 
@@ -121,7 +121,11 @@
                         <td class="p-2 border dark:border-gray-500"><?= htmlspecialchars($exp['title']) ?></td>
                         <td class="p-2 border dark:border-gray-500"><?= htmlspecialchars($exp['company']) ?></td>
                         <td class="p-2 border dark:border-gray-500"><?= $exp['start_date'] ?></td>
-                        <td class="p-2 border dark:border-gray-500"><?= $exp['end_date'] ?></td>
+                        
+                        <td class="p-2 border dark:border-gray-500">
+                            <?= ($exp['end_date'] === '0000-00-00' || $exp['end_date'] === null) ? 'Present' : htmlspecialchars($exp['end_date']) ?>
+                        </td>
+
                         <td class="p-2 border dark:border-gray-500"><?= htmlspecialchars($exp['description']) ?></td>
                         <td class="p-2 border dark:border-gray-500 text-center">
                             <a href="experiences.php?edit=<?= $exp['id'] ?>&about_id=<?= $about_id ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">

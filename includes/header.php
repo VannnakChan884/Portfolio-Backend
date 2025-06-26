@@ -28,16 +28,17 @@
 
         $siteTitle = $full_name ?: 'Admin Dashboard';
         $userName = $username ?: 'Admin';
-        $userProfile = $user_profile ?: 'assets/uploads/default.png';
+        $userProfile = (isset($user_profile) && file_exists($user_profile)) ? $user_profile : 'assets/uploads/default.png';
     }
 ?>
 <!DOCTYPE html>
 <html lang="en" class="">
 <head>
     <meta charset="UTF-8" />
-    <title><?= htmlspecialchars($siteTitle) ?> - Admin Dashboard</title>
+    <title><?= htmlspecialchars($userName) ?> - Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" type="image/png" href="<?= htmlspecialchars($userProfile); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
     <script>
         tailwind.config = {

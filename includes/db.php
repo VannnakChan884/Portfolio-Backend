@@ -100,8 +100,39 @@ $conn->query("CREATE TABLE IF NOT EXISTS messages (
     email VARCHAR(100),
     subject VARCHAR(255),
     message TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    reply TEXT,
+    replied_at DATETIME,
+    is_read BOOLEAN DEFAULT 0,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
+
+// Add 'is_read' column to messages table if it doesn't exist
+// $checkIsReadMessage = $conn->query("SHOW COLUMNS FROM messages LIKE 'is_read'");
+// if ($checkIsReadMessage->num_rows === 0) {
+//     $conn->query("ALTER TABLE messages ADD COLUMN is_read BOOLEAN DEFAULT 0");
+// }
+
+// Add 'reply' column if it doesn't exist
+// $checkReplyColumn = $conn->query("SHOW COLUMNS FROM messages LIKE 'reply'");
+// if ($checkReplyColumn->num_rows === 0) {
+//     $conn->query("ALTER TABLE messages ADD COLUMN reply TEXT DEFAULT NULL");
+// }
+
+// Add 'replied_at' column if it doesn't exist
+// $checkRepliedAtColumn = $conn->query("SHOW COLUMNS FROM messages LIKE 'replied_at'");
+// if ($checkRepliedAtColumn->num_rows === 0) {
+//     $conn->query("ALTER TABLE messages ADD COLUMN replied_at DATETIME DEFAULT NULL");
+// }
+
+
+// If Want Multiple Replies per Message (like a conversation)
+// $conn->query(" CREATE TABLE IF NOT EXISTS message_replies (
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     message_id INT NOT NULL,
+//     reply TEXT NOT NULL,
+//     replied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//     FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
+// )");
 
 // LOGIN_CODE table
 $conn->query("CREATE TABLE IF NOT EXISTS login_codes (

@@ -10,7 +10,10 @@
             <p class="text-3xl font-bold mt-2"><?= $totalProjects ?></p>
         </li>
         <li class="bg-white dark:bg-gray-800 shadow-md p-4 rounded-xl">
-            <h2 class="text-lg font-semibold">Total Messages</h2>
+            <h2 class="text-lg font-semibold">
+                <i class="fa-solid fa-envelope text-lg"></i>
+                Total Messages
+            </h2>
             <p class="text-3xl font-bold mt-2"><?= $totalMessages ?></p>
         </li>
         <li class="bg-white dark:bg-gray-800 shadow-md p-4 rounded-xl">

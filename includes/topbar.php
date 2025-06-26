@@ -1,13 +1,23 @@
 <header class="sticky top-0 flex justify-between items-center px-6 py-4 mb-4 rounded bg-white dark:bg-gray-800 shadow">
-    <h1 class="text-2xl font-bold capitalize">Welcome - <?= htmlspecialchars($userName) ?> 👋</h1>
+    <h1 class="text-2xl font-bold capitalize">Welcome - <?= htmlspecialchars($siteTitle) ?> 👋</h1>
+
     <div class="flex gap-3 items-center">
-        <button class="w-10 h-10 p-2 rounded-lg dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700">
-            <i class="fa-solid fa-bell"></i>
-        </button>
+
+        <!-- Message Icon with Unread Badge -->
+        <a href="messages.php" id="message-icon" class="relative flex items-center justify-center w-10 h-10 p-2 rounded-lg dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700">
+            <i class="fa-solid fa-envelope text-lg"></i>
+            <span id="unread-badge" class="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold animate-bounce p-1.5 rounded-full leading-none shadow">
+                0
+            </span>
+        </a>
+
+        <!-- Dark Mode Toggle -->
         <button id="dark-mode-toggle" aria-label="Toggle Dark Mode"
             class="w-10 h-10 p-2 rounded-lg dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700">
             🌙
         </button>
+
+        <!-- Profile Dropdown -->
         <div class="relative group">
             <button class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
                 <?php if ($userProfile): ?>
@@ -25,3 +35,30 @@
         </div>
     </div>
 </header>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const badge = document.getElementById("unread-badge");
+
+    async function fetchUnreadCount() {
+        try {
+            const res = await fetch("api/get-unread-count.php");
+            const data = await res.json();
+            if (data.unread > 0) {
+                badge.textContent = data.unread;
+                badge.classList.remove("hidden");
+            } else {
+                badge.classList.add("hidden");
+            }
+        } catch (err) {
+            console.error("Failed to fetch unread count:", err);
+        }
+    }
+
+    // Initial call
+    fetchUnreadCount();
+
+    // Poll every 10 seconds
+    setInterval(fetchUnreadCount, 10000);
+});
+</script>

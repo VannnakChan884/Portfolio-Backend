@@ -19,44 +19,6 @@
         exit;
     }
 
-    // Handle Add User
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
-        $result = handleAddUser($conn);
-        if ($result === true) {
-            $_SESSION['success'] = "User added successfully.";
-            header("Location: users.php");
-            exit;
-        } else {
-            $error = $result;
-        }
-    }
-
-    // Handle Update User
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
-        $result = handleUpdateUser($conn);
-        if ($result === true) {
-            $_SESSION['success'] = "User updated successfully.";
-            header("Location: users.php");
-            exit;
-        } else {
-            $_SESSION['error'] = $result;
-            header("Location: users.php?edit={$_POST['id']}&username=" . urlencode($_POST['username']) . "&email=" . urlencode($_POST['email']) . "&full_name=" . urlencode($_POST['full_name']) . "&user_profile=" . urlencode($_POST['existing_profile']) . "&role=" . urlencode($_POST['role']));
-            exit;
-        }
-    }
-
-    // Handle Delete User
-    if (isset($_GET['delete'])) {
-        $id = intval($_GET['delete']);
-        if ($conn->query("DELETE FROM users WHERE id = $id")) {
-            $_SESSION['success'] = "User deleted successfully.";
-        } else {
-            $_SESSION['error'] = "Failed to delete user.";
-        }
-        header("Location: users.php");
-        exit;
-    }
-
     // Fetch users
     $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users ORDER BY created_at DESC");
 ?>
@@ -75,7 +37,8 @@
                 <!-- Modal Content -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-xl w-full transform transition-transform scale-95">
                     <!-- <button id="closeModalBtn" class="absolute top-2 right-2 text-gray-500 hover:text-red-500">✖</button> -->
-                    <form method="POST" enctype="multipart/form-data" class="grid grid-cols-1 gap-4">
+                    <form id="userForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 gap-4" data-mode="<?= isset($_GET['edit']) ? 'update' : 'add' ?>">
+                        
                         <h2 class="text-2xl font-bold">
                             <?= isset($_GET['edit']) ? 'Update User' : 'Add New User' ?>
                         </h2>
@@ -160,20 +123,21 @@
                         <div class="flex justify-end gap-3 mt-4">
                             <button type="button" id="closeModalBtn" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
                             <?php if (isset($_GET['edit'])): ?>
-                                    <button name="update_user" type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded">Update User</button>
+                                    <button type="submit" name="update_user" data-action="update_user" class="bg-yellow-600 text-white px-4 py-2 rounded">Update User</button>
                             <?php else: ?>
-                                <button name="add_user" type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Add User</button>
+                                <button type="submit" name="add_user" data-action="add_user" class="bg-blue-600 text-white px-4 py-2 rounded">Add User</button>
                             <?php endif; ?>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <button id="openModalBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                + Add New
-            </button>
-
-            <h3 class="text-lg font-semibold mb-2">Existing Users</h3>
+            <div class="flex flex-row mb-6">
+                <h3 class="flex-1 text-2xl font-semibold mb-2">Users List Management</h3>
+                <button id="openModalBtn" class="w-26 flex-none bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600">
+                    <i class="fa-solid fa-user-plus mr-1"></i> Add New
+                </button>
+            </div>
             <table class="w-full border border-collape">
                 <thead class="bg-gray-100 dark:bg-gray-700">
                     <tr>
@@ -189,7 +153,7 @@
                 </thead>
                 <tbody>
                     <?php while ($user = $users->fetch_assoc()): ?>
-                        <tr class="border-b">
+                        <tr>
                             <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($user['username']) ?></td>
                             <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($user['email']) ?></td>
                             <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($user['full_name']) ?></td>
@@ -215,15 +179,11 @@
                             </td>
                             <td class="p-2 border dark:border-gray-600"><?= $user['created_at'] ?></td>
                             <td class="p-2 border dark:border-gray-600"><?= $user['updated_at'] ?? '—' ?></td>
-                            <td class="flex p-2 border dark:border-gray-600 text-center">
+                            <td class="p-2 border dark:border-gray-600 text-center">
                                 <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'] ?? '')) ?>&role=<?= urlencode(trim($user['role'] ?? '')) ?>"
-                                    class="inline-block  text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
+                                    class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
                                     <i class="fa-solid fa-user-pen"></i>
                                 </a>
-                                <!-- <a href="users.php?delete=<?= $user['id'] ?>" onclick="return confirm('Are you sure? You want to delete this user?')"
-                                    class="inline-block text-sm px-2 py-1 rounded bg-red-100 text-red-600">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a> -->
                                 <button data-delete-id="<?= $user['id'] ?>" class="text-sm px-2 py-1 rounded bg-red-100 text-red-600">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
@@ -232,6 +192,15 @@
                     <?php endwhile; ?>
                 </tbody>
             </table>
+
+            <!-- Pagination -->
+            <div class="mt-4 flex justify-center space-x-2">
+                    <a href="" class="px-3 py-1 border rounded hover:bg-gray-200">&laquo; Prev</a>
+
+                    <a href="" class="px-3 py-1 border rounded bg-blue-600 text-white hover:bg-gray-200">1 </a>
+
+                    <a href="" class="px-3 py-1 border rounded hover:bg-gray-200">Next &raquo;</a>
+            </div>
             
             <!-- Delete Confirmation Modal -->
             <div id="deleteConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -259,6 +228,10 @@
     <script type="module">
         import { initImagePreview, initCancelButton, initUpdateButtonDisable } from './assets/js/form-utils.js';
         import { setupDeleteModal } from './assets/js/delete-utils.js';
+        import { handleUserFormAjax } from './assets/js/user-form-utils.js';
+
+        // Form user
+        handleUserFormAjax('#addUserModal form', 'user-handler.php');
 
         // Delete user
         setupDeleteModal({
@@ -370,7 +343,5 @@
         if (isEditMode || isAddMode) {
             setTimeout(() => showModal(), 60);
         }
-
-
     </script>
 <?php include 'includes/footer.php'; ?>

@@ -141,8 +141,12 @@
                                 </td>
                                 <td class="p-2 border dark:border-gray-600"><a href="<?= $row['project_link'] ?>" class="text-blue-600" target="_blank">View</a></td>
                                 <td class="p-2 border dark:border-gray-600">
-                                    <a href="?edit=<?= $row['id'] ?>&lang=<?= $lang ?>" class="text-blue-600 hover:underline">Edit</a> |
-                                    <a href="?delete=<?= $row['id'] ?>&lang=<?= $lang ?>" onclick="return confirm('Are you sure?')" class="text-red-600 hover:underline">Delete</a>
+                                    <a href="?edit=<?= $row['id'] ?>&lang=<?= $lang ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="?delete=<?= $row['id'] ?>&lang=<?= $lang ?>" onclick="return confirm('Are you sure?')" class="inline-block text-sm px-2 py-1 rounded bg-red-100 text-red-600">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>

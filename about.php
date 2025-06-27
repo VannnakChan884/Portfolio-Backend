@@ -130,7 +130,7 @@ $aboutResult = $conn->query("SELECT * FROM about ORDER BY created_at DESC");
                                 <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($row['title']) ?></td>
                                 <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($row['description']) ?></td>
                                 <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($row['lang']) ?></td>
-                                <td class="text-center p-2 border dark:border-gray-600">
+                                <td class="flex text-center p-2 border dark:border-gray-600">
                                     <a href="experiences.php?about_id=<?= $row['id'] ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-green-100 text-green-600 mr-2">
                                         <i class="fa-solid fa-briefcase"></i>
                                     </a>

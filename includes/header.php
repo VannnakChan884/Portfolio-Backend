@@ -44,7 +44,12 @@
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: {}
+                extend: {
+                    transitionProperty: {
+                        'opacity': 'opacity',
+                        'transform': 'transform',
+                    },
+                }
             },
             variants: {
                 extend: {

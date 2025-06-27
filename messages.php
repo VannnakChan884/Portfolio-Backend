@@ -73,8 +73,10 @@
                                 </td>
                                 <td class="p-2 border dark:border-gray-600"><?= nl2br(htmlspecialchars($row['message'])) ?></td>
                                 <td class="p-2 border dark:border-gray-600"><?= $row['sent_at'] ?></td>
-                                <td class="p-2 border dark:border-gray-600">
-                                    <a href="?delete=<?= $row['id'] ?>" onclick="return confirm('Delete this message?')" class="text-red-600 hover:underline">Delete</a>
+                                <td class="p-2 border dark:border-gray-600 text-center">
+                                    <a href="?delete=<?= $row['id'] ?>" onclick="return confirm('Delete this message?')" class="inline-block text-sm px-2 py-1 rounded bg-red-100 text-red-600">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <!-- Collapsible reply form -->

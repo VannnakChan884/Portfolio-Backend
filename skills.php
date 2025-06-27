@@ -202,7 +202,7 @@
                                 <?php endif; ?>
                             </div>
                         </td>
-                        <td class="p-2 border dark:border-gray-600">
+                        <td class="flex p-2 border dark:border-gray-600">
                             <a href="skills.php?edit=<?= $row['id'] ?>&home_id=<?= $home_id ?>" class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>

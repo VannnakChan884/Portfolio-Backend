@@ -19,8 +19,21 @@
         exit;
     }
 
+    // ✅ 1. Replace static SQL with pagination-aware SQL
+    $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+    $offset = ($page - 1) * $limit;
+
+    $searchSql = $search ? "WHERE username LIKE '%$search%' OR email LIKE '%$search%' OR full_name LIKE '%$search%'" : '';
+    $totalQuery = $conn->query("SELECT COUNT(*) AS total FROM users $searchSql");
+    $totalRows = $totalQuery->fetch_assoc()['total'];
+    $totalPages = ceil($totalRows / $limit);
+
+    $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users $searchSql ORDER BY created_at DESC LIMIT $limit OFFSET $offset");
+
     // Fetch users
-    $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users ORDER BY created_at DESC");
+    // $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users ORDER BY created_at DESC");
 ?>
 
 <div class="flex min-h-screen">
@@ -134,11 +147,56 @@
 
             <div class="flex flex-row mb-6">
                 <h3 class="flex-1 text-2xl font-semibold mb-2">Users List Management</h3>
+                <button id="exportCsvBtn" class="mr-3 bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600">
+                    <i class="fa-solid fa-file-csv mr-1"></i> Export CSV
+                </button>
                 <button id="openModalBtn" class="w-26 flex-none bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600">
                     <i class="fa-solid fa-user-plus mr-1"></i> Add New
                 </button>
             </div>
-            <table class="w-full border border-collape">
+
+            <!-- ✅ 2. Add search + per page -->
+            <div class="flex justify-between mb-4">
+                <div class="border px-3 py-1 rounded focus:outline-2 focus:outline-offset-2 focus:outline-violet-500">
+                    <label for="searchInput"><i class="fa-solid fa-filter"></i></label>
+                    <input type="text" id="searchInput" name="searchInput" value="<?= htmlspecialchars($search) ?>" placeholder="Filter user ..." class="ml-2 outline-none focus:outline-none">
+                </div>
+            </div>
+
+            <ul role="list" class="grid grid-cols-4 gap-4 items-center">
+            <?php while ($user = $users->fetch_assoc()): ?>
+                <li class="group/item relative flex items-center justify-between rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-white/5">
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <img class="h-16 w-16 rounded-full" src="<?= htmlspecialchars($user['user_profile'] ?: 'assets/uploads/default.png') ?>" alt="User Profile" />
+                        </div>
+                        <div class="w-full text-sm leading-6">
+                            <h1 class="text-xl font-semibold text-gray-900 dark:text-white uppercase"><?= htmlspecialchars($user['username']) ?></h1>
+                            <span class="bg-green-300/50 text-green-600 text-base px-2 rounded normal-case"><?= htmlspecialchars($user['role']) ?></span>
+                            <p class="text-base text-gray-500"><?= htmlspecialchars($user['email']) ?></p>
+
+                        </div>
+                    </div>
+                    <div class="invisible relative flex items-center rounded py-1 text-sm whitespace-nowrap text-gray-500 transition group-hover/item:visible dark:text-gray-400">
+                        <div class="grid grid-cols-1 gap-2">
+                            <div class="group/edit ">
+                                <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'] ?? '')) ?>&role=<?= urlencode(trim($user['role'] ?? '')) ?>"
+                                    class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600 font-semibold transition group-hover/edit:text-gray-700">
+                                    <i class="fa-solid fa-user-pen"></i>
+                                </a>
+                            </div>
+                            <div class="group/delete">
+                                <button data-delete-id="<?= $user['id'] ?>" class="text-sm px-2 py-1 rounded bg-red-100 text-red-600 font-semibold transition group-hover/delete:text-gray-700">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            <?php endwhile; ?>
+            </ul>
+
+            <!-- <table id="userTableBody" class="w-full border border-collape">
                 <thead class="bg-gray-100 dark:bg-gray-700">
                     <tr>
                         <th class="p-2 border dark:border-gray-600">Username</th>
@@ -191,15 +249,30 @@
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
-            </table>
+            </table> -->
 
-            <!-- Pagination -->
-            <div class="mt-4 flex justify-center space-x-2">
-                    <a href="" class="px-3 py-1 border rounded hover:bg-gray-200">&laquo; Prev</a>
-
-                    <a href="" class="px-3 py-1 border rounded bg-blue-600 text-white hover:bg-gray-200">1 </a>
-
-                    <a href="" class="px-3 py-1 border rounded hover:bg-gray-200">Next &raquo;</a>
+            <!-- ✅ 3. Update pagination controls -->
+            <div class="mt-4">
+                <div class="flex items-center justify-end gap-x-4">
+                    <div class="flex items-center">
+                        <p class="text-base text-gray-500 mr-3">Rows per page:</p>
+                        <select id="perPage" class="bg-transparent py-4 pr-6 focus:outline-none cursor-pointer">
+                            <option value="5" <?= $limit == 5 ? 'selected' : '' ?>>5</option>
+                            <option value="10" <?= $limit == 10 ? 'selected' : '' ?>>10</option>
+                            <option value="20" <?= $limit == 30 ? 'selected' : '' ?>>30</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-x-4">
+                        <?php
+                            $start = $offset + 1;
+                            $end = min($offset + $limit, $totalRows);
+                        ?>
+                        <p class="text-base text-gray-500"><?= $start ?>-<?= $end ?> of <?= $totalRows ?></p>
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <a href="?page=<?= $i ?>&limit=<?= $limit ?>&search=<?= urlencode($search) ?>" class="px-3 py-1 border rounded <?= $i == $page ? 'bg-blue-600 text-white' : 'hover:bg-gray-200' ?>"> <?= $i ?> </a>
+                        <?php endfor; ?>
+                    </div>
+                </div>
             </div>
             
             <!-- Delete Confirmation Modal -->
@@ -343,5 +416,18 @@
         if (isEditMode || isAddMode) {
             setTimeout(() => showModal(), 60);
         }
+
+        //✅ 4. Add JavaScript for real-time filter & limit
+        document.getElementById('searchInput').addEventListener('input', () => {
+            const search = document.getElementById('searchInput').value;
+            const limit = document.getElementById('perPage').value;
+            window.location.href = `?search=${encodeURIComponent(search)}&limit=${limit}&page=1`;
+        });
+
+        document.getElementById('perPage').addEventListener('change', () => {
+            const search = document.getElementById('searchInput').value;
+            const limit = document.getElementById('perPage').value;
+            window.location.href = `?search=${encodeURIComponent(search)}&limit=${limit}&page=1`;
+        });
     </script>
 <?php include 'includes/footer.php'; ?>

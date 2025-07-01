@@ -1,4 +1,4 @@
-<?php include 'includes/header.php'; ?>
+<?php require_once 'includes/header.php'; ?>
 <?php
     require_once 'includes/functions.php';
 
@@ -171,19 +171,21 @@
                             <img class="h-16 w-16 rounded-full" src="<?= htmlspecialchars($user['user_profile'] ?: 'assets/uploads/default.png') ?>" alt="User Profile" />
                         </div>
                         <div class="w-full text-sm leading-6">
-                            <h1 class="text-xl font-semibold text-gray-900 dark:text-white uppercase"><?= htmlspecialchars($user['username']) ?></h1>
-                            <span class="bg-green-300/50 text-green-600 text-base px-2 rounded normal-case"><?= htmlspecialchars($user['role']) ?></span>
-                            <p class="text-base text-gray-500"><?= htmlspecialchars($user['email']) ?></p>
+                            <h1 class="text-xl font-semibold text-gray-900 dark:text-white uppercase"><?= htmlspecialchars($user['username'] ?? '') ?></h1>
+                            <span class="bg-green-300/50 text-green-600 text-base px-2 rounded normal-case"><?= htmlspecialchars($user['role'] ?? '') ?></span>
+                            <p class="text-base text-gray-500"><?= htmlspecialchars($user['email'] ?? '') ?></p>
 
                         </div>
                     </div>
                     <div class="invisible relative flex items-center rounded py-1 text-sm whitespace-nowrap text-gray-500 transition group-hover/item:visible dark:text-gray-400">
                         <div class="grid grid-cols-1 gap-2">
                             <div class="group/edit ">
-                                <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'] ?? '')) ?>&role=<?= urlencode(trim($user['role'] ?? '')) ?>"
+                                <?php if ($_SESSION['admin_role'] === 'admin'): ?>
+                                <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'] ?? '')) ?>&email=<?= urlencode(trim($user['email'] ?? '')) ?>&full_name=<?= urlencode(trim($user['full_name'] ?? '')) ?>&user_profile=<?= urlencode(trim($user['user_profile'] ?? '')) ?>&role=<?= urlencode(trim($user['role'] ?? '')) ?>"
                                     class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600 font-semibold transition group-hover/edit:text-gray-700">
                                     <i class="fa-solid fa-user-pen"></i>
                                 </a>
+                                <?php endif; ?>
                             </div>
                             <div class="group/delete">
                                 <button data-delete-id="<?= $user['id'] ?>" class="text-sm px-2 py-1 rounded bg-red-100 text-red-600 font-semibold transition group-hover/delete:text-gray-700">
@@ -252,7 +254,8 @@
             </table> -->
 
             <!-- ✅ 3. Update pagination controls -->
-            <div class="mt-4">
+            <div class="flex justify-between items-center mt-4 border-t">
+                <div><?php include 'components/back-button.php'; ?></div>
                 <div class="flex items-center justify-end gap-x-4">
                     <div class="flex items-center">
                         <p class="text-base text-gray-500 mr-3">Rows per page:</p>
@@ -293,7 +296,6 @@
 
             <!-- Toast -->
             <div id="toastSuccess" class="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg hidden transition">User deleted successfully.</div>
-            <?php include 'components/back-button.php'; ?>
         </div>
      </main>
 </div>

@@ -145,6 +145,14 @@ $conn->query("CREATE TABLE IF NOT EXISTS login_codes (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 )");
 
+// code_requests table
+// $conn->query("CREATE TABLE IF NOT EXISTS code_requests (
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     user_id INT NOT NULL,
+//     requested_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+//     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+// )");
+
 // SETTINGS table
 $conn->query("CREATE TABLE IF NOT EXISTS settings (
     id INT AUTO_INCREMENT PRIMARY KEY,

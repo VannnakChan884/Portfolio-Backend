@@ -44,12 +44,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_id'] = $userId;
 
-        $getRole = $conn->prepare("SELECT role FROM users WHERE id = ?");
-        $getRole->bind_param("i", $userId);
-        $getRole->execute();
-        $getRole->bind_result($role);
-        $getRole->fetch();
+        $getUser = $conn->prepare("SELECT role, user_profile FROM users WHERE id = ?");
+        $getUser->bind_param("i", $userId);
+        $getUser->execute();
+        $getUser->bind_result($role, $user_profile);
+        $getUser->fetch();
+
         $_SESSION['admin_role'] = $role;
+        $_SESSION['admin_profile'] = $user_profile ?: 'assets/uploads/default.png'; // Fallback if null
+
+        // $getRole = $conn->prepare("SELECT role FROM users WHERE id = ?");
+        // $getRole->bind_param("i", $userId);
+        // $getRole->execute();
+        // $getRole->bind_result($role);
+        // $getRole->fetch();
+        // $_SESSION['admin_role'] = $role;
 
         header("Location: ../dashboard.php");
         exit;

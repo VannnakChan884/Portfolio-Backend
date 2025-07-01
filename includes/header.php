@@ -14,6 +14,11 @@
     $userName = 'Admin';
     $userProfile = 'assets/uploads/default.png'; // fallback image
 
+    // ✅ Prefer session profile if set (Google login)
+    if (!empty($_SESSION['admin_profile'])) {
+        $userProfile = $_SESSION['admin_profile'];
+    }
+
     // ✅ Only run user query if session ID exists
     if (isset($_SESSION['admin_id'])) {
         $adminId = $_SESSION['admin_id'];
@@ -26,9 +31,18 @@
         $stmt->fetch();
         $stmt->close();
 
-        $siteTitle = $full_name ?: 'Admin Dashboard';
-        $userName = $username ?: 'Admin';
-        $userProfile = (isset($user_profile) && file_exists($user_profile)) ? $user_profile : 'assets/uploads/default.png';
+        $siteTitle = $full_name ?: $siteTitle;
+        $userName = $username ?: $userName;
+
+        // ✅ Update profile only if it's a local file or valid image
+        if (!empty($user_profile)) {
+            if (filter_var($user_profile, FILTER_VALIDATE_URL)) {
+                $userProfile = $user_profile;
+            } elseif (file_exists($user_profile)) {
+                $userProfile = $user_profile;
+            }
+        }
+        // $userProfile = (isset($user_profile) && file_exists($user_profile)) ? $user_profile : 'assets/uploads/default.png';
     }
 ?>
 <!DOCTYPE html>

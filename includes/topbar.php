@@ -1,3 +1,10 @@
+<?php 
+    $userProfile = $_SESSION['admin_profile'] ?? 'assets/uploads/default.png';
+    // echo '<pre>';
+    // print_r($_SESSION);
+    // echo '</pre>';
+?>
+
 <header class="sticky top-0 flex justify-between items-center px-6 py-4 mb-4 rounded bg-white dark:bg-gray-800 shadow">
     <h1 class="text-2xl font-bold capitalize">Welcome - <?= htmlspecialchars($siteTitle) ?> 👋</h1>
 

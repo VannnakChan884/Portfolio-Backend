@@ -42,7 +42,7 @@ export function handleUserFormAjax(formSelector, endpoint) {
                 const cleanUrl = window.location.origin + window.location.pathname;
                 setTimeout(() => {
                     window.location.href = cleanUrl;
-                }, 800); // slight delay for user to see message
+                }, 1000); // slight delay for user to see message
             } else {
                 showError(result.message || 'Something went wrong.');
             }
@@ -65,7 +65,7 @@ function showSuccess(message) {
         toast.classList.remove('hidden');
         setTimeout(() => {
             toast.classList.add('hidden');
-        }, 2000);
+        }, 6000);
     } else {
         alert(message);
     }

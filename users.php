@@ -147,9 +147,6 @@
 
             <div class="flex flex-row mb-6">
                 <h3 class="flex-1 text-2xl font-semibold mb-2">Users List Management</h3>
-                <button id="exportCsvBtn" class="mr-3 bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600">
-                    <i class="fa-solid fa-file-csv mr-1"></i> Export CSV
-                </button>
                 <button id="openModalBtn" class="w-26 flex-none bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600">
                     <i class="fa-solid fa-user-plus mr-1"></i> Add New
                 </button>
@@ -159,46 +156,11 @@
             <div class="flex justify-between mb-4">
                 <div class="border px-3 py-1 rounded focus:outline-2 focus:outline-offset-2 focus:outline-violet-500">
                     <label for="searchInput"><i class="fa-solid fa-filter"></i></label>
-                    <input type="text" id="searchInput" name="searchInput" value="<?= htmlspecialchars($search) ?>" placeholder="Filter user ..." class="ml-2 outline-none focus:outline-none">
+                    <input type="text" id="searchInput" name="searchInput" value="<?= htmlspecialchars($search) ?>" placeholder="Filter user ..." class="dark:bg-transparent ml-2 outline-none focus:outline-none">
                 </div>
             </div>
 
-            <ul role="list" class="grid grid-cols-4 gap-4 items-center">
-            <?php while ($user = $users->fetch_assoc()): ?>
-                <li class="group/item relative flex items-center justify-between rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-white/5">
-                    <div class="flex gap-4">
-                        <div class="flex-shrink-0">
-                            <img class="h-16 w-16 rounded-full" src="<?= htmlspecialchars($user['user_profile'] ?: 'assets/uploads/default.png') ?>" alt="User Profile" />
-                        </div>
-                        <div class="w-full text-sm leading-6">
-                            <h1 class="text-xl font-semibold text-gray-900 dark:text-white uppercase"><?= htmlspecialchars($user['username'] ?? '') ?></h1>
-                            <span class="bg-green-300/50 text-green-600 text-base px-2 rounded normal-case"><?= htmlspecialchars($user['role'] ?? '') ?></span>
-                            <p class="text-base text-gray-500"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-
-                        </div>
-                    </div>
-                    <div class="invisible relative flex items-center rounded py-1 text-sm whitespace-nowrap text-gray-500 transition group-hover/item:visible dark:text-gray-400">
-                        <div class="grid grid-cols-1 gap-2">
-                            <div class="group/edit ">
-                                <?php if ($_SESSION['admin_role'] === 'admin'): ?>
-                                <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'] ?? '')) ?>&email=<?= urlencode(trim($user['email'] ?? '')) ?>&full_name=<?= urlencode(trim($user['full_name'] ?? '')) ?>&user_profile=<?= urlencode(trim($user['user_profile'] ?? '')) ?>&role=<?= urlencode(trim($user['role'] ?? '')) ?>"
-                                    class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600 font-semibold transition group-hover/edit:text-gray-700">
-                                    <i class="fa-solid fa-user-pen"></i>
-                                </a>
-                                <?php endif; ?>
-                            </div>
-                            <div class="group/delete">
-                                <button data-delete-id="<?= $user['id'] ?>" class="text-sm px-2 py-1 rounded bg-red-100 text-red-600 font-semibold transition group-hover/delete:text-gray-700">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            <?php endwhile; ?>
-            </ul>
-
-            <!-- <table id="userTableBody" class="w-full border border-collape">
+            <table id="userTableBody" class="w-full border border-collape">
                 <thead class="bg-gray-100 dark:bg-gray-700">
                     <tr>
                         <th class="p-2 border dark:border-gray-600">Username</th>
@@ -251,7 +213,7 @@
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
-            </table> -->
+            </table>
 
             <!-- ✅ 3. Update pagination controls -->
             <div class="flex justify-between items-center mt-4 border-t">
@@ -280,16 +242,15 @@
             
             <!-- Delete Confirmation Modal -->
             <div id="deleteConfirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                <div class="bg-white p-6 text-center rounded-xl shadow max-w-sm w-full">
-                    <h2 class="text-3xl font-semibold mb-4">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        Confirm Deletion
+                <div class="bg-white p-6 text-left rounded-xl shadow max-w-sm w-full">
+                    <h2 class="text-xl font-semibold mb-4">
+                        Delete user?
                     </h2>
                     <p class="mb-1">Are you sure you want to delete this user?</p>
-                    <p class="mb-4">This action cannot be undone.</p>
-                    <div class="flex justify-center gap-4">
-                        <button id="cancelDeleteBtn" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
-                        <button id="confirmDeleteBtn" class="bg-red-500 text-white px-4 py-2 rounded">Yes, Delete</button>
+                    <p class="mb-4">This will delete <strong></strong>.</p>
+                    <div class="flex justify-end gap-4">
+                        <button id="cancelDeleteBtn" class="border border-gray-300 hover:bg-gray-300/50 px-4 py-2 rounded-full">Cancel</button>
+                        <button id="confirmDeleteBtn" class="border border-red-500 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full">Delete</button>
                     </div>
                 </div>
             </div>

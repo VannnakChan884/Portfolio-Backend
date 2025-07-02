@@ -120,23 +120,16 @@
 </head>
 <body class="bg-gray-900 flex items-center justify-center h-screen">
     <div class="bg-white w-full max-w-4xl rounded-2xl shadow-lg flex overflow-hidden">
-        <!-- Left Side -->
-        <div class="w-1/2 bg-gradient-to-br from-blue-500 to-blue-300 text-white flex flex-col justify-center items-center p-10 relative">
-            <h2 class="text-4xl font-bold mb-2">Register</h2>
-            <p class="text-sm">Create a new account</p>
-            <div class="absolute top-0 left-0 w-16 h-16 bg-white opacity-10 rounded-br-full"></div>
-        </div>
-
-        <!-- Right Side -->
+        <!-- left Side -->
         <div class="w-1/2 p-10">
             <h3 class="text-2xl font-bold text-center mb-6">Admin Register</h3>
 
             <!-- Notification Message -->
             <?php if ($error): ?>
-                <div class="bg-red-100 text-red-700 text-sm p-2 rounded border border-red-300"><?= htmlspecialchars($error) ?></div>
+                <div class="bg-red-100 text-red-700 text-sm p-2 mb-4 rounded border border-red-300"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
             <?php if ($success): ?>
-                <div class="bg-green-100 text-green-700 text-sm p-2 rounded border border-green-300"><?= htmlspecialchars($success) ?></div>
+                <div class="bg-green-100 text-green-700 text-sm p-2 mb-4 rounded border border-green-300"><?= htmlspecialchars($success) ?></div>
             <?php endif; ?>
 
             <form action="" method="POST" enctype="multipart/form-data" class="space-y-4">
@@ -163,23 +156,24 @@
                 <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 font-medium">Register</button>
             </form>
 
-            <div class="mt-6 text-sm text-center">
+            <div class="my-6 text-sm text-center">
                 Or login with
-                <div class="flex justify-center gap-4 mt-2">
-                    <a href="google-login.php" class="flex items-center px-4 py-2 border rounded text-sm hover:bg-gray-50">
+                <a href="google-login.php" class="flex items-center justify-center px-4 py-2 mt-2 border rounded text-sm hover:bg-gray-50">
                     <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-4 h-4 mr-2" alt="Google">
                     Google
-                    </a>
-                    <a href="facebook-login.php" class="flex items-center px-4 py-2 border rounded text-sm hover:bg-gray-50">
-                    <i class="fab fa-facebook text-blue-600 mr-2"></i> Facebook
-                    </a>
-                </div>
+                </a>
             </div>
-
             <p class="mt-4 text-center text-sm">
                 Already registered?
                 <a href="auth/login.php" class="text-blue-600 hover:underline font-medium">Login here</a>
             </p>
+        </div>
+
+        <!-- Right Side -->
+        <div class="w-1/2 bg-gradient-to-bl from-blue-500 to-blue-300 text-white flex flex-col justify-center items-center p-10 relative">
+            <h2 class="text-4xl font-bold mb-2">Register</h2>
+            <p class="text-sm">Create a new account</p> 
+            <div class="absolute bottom-0 right-0 w-48 h-48 bg-white opacity-10 rounded-tl-full"></div>
         </div>
     </div>
 
@@ -210,4 +204,3 @@
 </body>
 
 </html>
-

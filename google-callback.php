@@ -41,27 +41,53 @@ if (isset($_GET['code'])) {
         $stmt->fetch();
 
         if (empty($role)) {
-            $_SESSION['login_error'] = "This email is already registered and pending approval.";
+            $_SESSION['login_error'] = "Your account is registered but not approved yet. Please contact the administrator.";
             header("Location: auth/login.php");
             exit;
         }
 
-        // Check if login code already exists and is still valid
+        // Check if login code already exists
         $codeStmt = $conn->prepare("SELECT code, is_used, expires_at FROM login_codes WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
         $codeStmt->bind_param("i", $user_id);
         $codeStmt->execute();
         $codeData = $codeStmt->get_result()->fetch_assoc();
 
-        if ($codeData && !$codeData['is_used'] && strtotime($codeData['expires_at']) > time()) {
-            $_SESSION['pending_user_id'] = $user_id;
-            header("Location: auth/verify.php");
-            exit;
+        if ($codeData) {
+            $isUsed = $codeData['is_used'];
+            $isExpired = strtotime($codeData['expires_at']) < time();
+
+            if ($isUsed) {
+                if (!empty($role)) {
+                    // ✅ Already used and approved — direct to dashboard
+                    $_SESSION['admin_logged_in'] = true;
+                    $_SESSION['admin_id'] = $user_id;
+                    $_SESSION['admin_role'] = $role;
+                    $_SESSION['admin_profile'] = $user_profile ?: 'assets/uploads/default.png';
+                    header("Location: dashboard.php");
+                    exit;
+                } else {
+                    // ❌ Already used but not approved
+                    $_SESSION['login_error'] = "Your account is pending admin approval. Please contact the administrator.";
+                    header("Location: auth/login.php");
+                    exit;
+                }
+            } elseif ($isExpired) {
+                // 🔁 Expired — redirect to verify page
+                $_SESSION['pending_user_id'] = $user_id;
+                $_SESSION['login_notice'] = "Your code has expired. Please request a new one.";
+                header("Location: auth/verify.php");
+                exit;
+            } else {
+                // 🕐 Valid and not used — go verify
+                $_SESSION['pending_user_id'] = $user_id;
+                header("Location: auth/verify.php");
+                exit;
+            }
         } else {
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['admin_id'] = $user_id;
-            $_SESSION['admin_role'] = $role;
-            $_SESSION['admin_profile'] = $user_profile ?: 'assets/uploads/default.png';
-            header("Location: dashboard.php");
+            // 🚫 No code found — go to verify
+            $_SESSION['pending_user_id'] = $user_id;
+            $_SESSION['login_notice'] = "No code found. Please verify your login.";
+            header("Location: auth/verify.php");
             exit;
         }
     } else {
@@ -69,6 +95,8 @@ if (isset($_GET['code'])) {
         registerThirdPartyUser($name, $email, $conn, $profileImage);
     }
 } else {
+    // 👤 New user trying to register with Google — deny & warn
+    $_SESSION['login_error'] = "You are not registered. Please register first.";
     header("Location: auth/login.php");
     exit;
 }

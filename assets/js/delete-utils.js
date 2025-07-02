@@ -34,18 +34,30 @@ export function setupDeleteModal({
         fetch(`${endpoint}${deleteTargetId}`, {
             method: 'GET',
         })
-            .then(res => res.json())
+            .then(async res => {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return res.json();
+                } else {
+                    const text = await res.text();
+                    throw new Error("Not JSON: " + text);
+                }
+            })
             .then(data => {
+                console.log("Server response:", data);
                 if (data.success) {
                     deleteRow.classList.add('opacity-0', 'transition', 'duration-300');
                     setTimeout(() => deleteRow.remove(), 200);
-
                     toast?.classList.remove('hidden');
                     setTimeout(() => toast?.classList.add('hidden'), 3000);
                 } else {
-                    alert('Failed to delete item.');
+                    alert(data.message || 'Failed to delete item.');
                 }
-            }).catch(() => alert('Server error.'));
+            })
+            .catch(err => {
+                console.error("Fetch error:", err); // Updated to show full error
+                alert('Server error: ' + err.message);
+            });
 
         modal.classList.add('hidden');
         deleteTargetId = null;

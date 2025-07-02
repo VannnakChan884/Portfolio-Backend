@@ -120,23 +120,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
 
       <div class="mt-6 text-sm text-center">
-            Or login with
-            <div class="flex justify-center gap-4 mt-2">
-                <a href="../google-login.php" class="flex items-center px-4 py-2 border rounded text-sm hover:bg-gray-50">
-                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-4 h-4 mr-2" alt="Google">
-                  Google
-                </a>
-                <a href="../facebook-login.php" class="flex items-center px-4 py-2 border rounded text-sm hover:bg-gray-50">
-                  <i class="fab fa-facebook text-blue-600 mr-2"></i> Facebook
-                </a>
-            </div>
+        Or login with
+        <a href="../google-login.php" class="flex items-center justify-center px-4 py-2 mt-2 border rounded text-sm hover:bg-gray-50">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-4 h-4 mr-2" alt="Google">
+          Google
+        </a>
       </div>
 
       <p class="mt-4 text-center text-sm">
-        Don’t have an account? <a href="../register.php" class="text-blue-500 hover:underline">Register here</a>
+        Don't have an account? <a href="../register.php" class="text-blue-500 hover:underline">Register here</a>
       </p>
     </div>
   </div>
 </body>
 </html>
-

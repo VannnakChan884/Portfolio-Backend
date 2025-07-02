@@ -41,24 +41,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updateStmt->execute();
 
         // Log in the user
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_id'] = $userId;
-
         $getUser = $conn->prepare("SELECT role, user_profile FROM users WHERE id = ?");
         $getUser->bind_param("i", $userId);
         $getUser->execute();
         $getUser->bind_result($role, $user_profile);
         $getUser->fetch();
 
-        $_SESSION['admin_role'] = $role;
-        $_SESSION['admin_profile'] = $user_profile ?: 'assets/uploads/default.png'; // Fallback if null
+        if (empty($role)) {
+            // ❌ Not approved yet
+            $_SESSION['login_error'] = "Your account is registered but not approved yet. Please contact the administrator.";
+            header("Location: login.php");
+            exit;
+        }
 
-        // $getRole = $conn->prepare("SELECT role FROM users WHERE id = ?");
-        // $getRole->bind_param("i", $userId);
-        // $getRole->execute();
-        // $getRole->bind_result($role);
-        // $getRole->fetch();
-        // $_SESSION['admin_role'] = $role;
+        // ✅ Approved → Login
+        $_SESSION['admin_logged_in'] = true;
+        $_SESSION['admin_id'] = $userId;
+        $_SESSION['admin_role'] = $role;
+        $_SESSION['admin_profile'] = $user_profile ?: 'assets/uploads/default.png';
 
         header("Location: ../dashboard.php");
         exit;

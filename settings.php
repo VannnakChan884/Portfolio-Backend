@@ -54,26 +54,30 @@
             <?php endif; ?>
 
             <form method="POST" enctype="multipart/form-data" class="space-y-4 my-6 max-w-3xl">
-                <input type="text" name="site_title" placeholder="Site Title" value="<?= $settings['site_title'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
+                <input type="text" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded opacity-50 cursor-not-allowed"':''?> name="site_title" placeholder="Site Title" value="<?= $settings['site_title'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="email" name="email" placeholder="Email" value="<?= $settings['email'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
+                <input type="email" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded opacity-50 cursor-not-allowed"':''?> name="email" placeholder="Email" value="<?= $settings['email'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="text" name="phone" placeholder="Phone" value="<?= $settings['phone'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
+                <input type="text" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded opacity-50 cursor-not-allowed"':''?> name="phone" placeholder="Phone" value="<?= $settings['phone'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <textarea name="description" placeholder="Site Description" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded"><?= $settings['description'] ?? '' ?></textarea>
+                <textarea name="description" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded opacity-50 cursor-not-allowed"':''?> placeholder="Site Description" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded"><?= $settings['description'] ?? '' ?></textarea>
 
-                <input type="text" name="facebook" placeholder="Facebook URL" value="<?= $settings['facebook'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
+                <input type="text" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded opacity-50 cursor-not-allowed"':''?> name="facebook" placeholder="Facebook URL" value="<?= $settings['facebook'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="text" name="telegram" placeholder="Telegram URL" value="<?= $settings['telegram'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
+                <input type="text" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded opacity-50 cursor-not-allowed"':''?> name="telegram" placeholder="Telegram URL" value="<?= $settings['telegram'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="text" name="Github" placeholder="Github URL" value="<?= $settings['github'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
+                <input type="text" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded opacity-50 cursor-not-allowed"':''?> name="Github" placeholder="Github URL" value="<?= $settings['github'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
 
-                <input type="file" name="logo" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
+                <input type="file" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded"':''?> name="logo" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
                 <?php if (!empty($settings['logo'])): ?>
                     <img src="<?= $settings['logo'] ?>" alt="Logo" class="w-32 h-auto mt-2">
                 <?php endif; ?>
 
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update Settings</button>
+                <button type="submit" 
+                    <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="bg-blue-600 text-white px-4 py-2 rounded opacity-50 cursor-not-allowed"' : 'class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"'; ?>
+                    title="<?= $_SESSION['admin_role'] !== 'admin' ? 'You do not have permission to update' : '' ?>">
+                    Update
+                </button>
             </form>
         </div>
     </main>

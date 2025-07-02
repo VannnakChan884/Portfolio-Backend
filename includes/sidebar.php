@@ -48,22 +48,18 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
             <li>
-                <?php if ($_SESSION['admin_role'] === 'admin'): ?>
-                    <a href="users.php"
+                <a href="users.php"
                     class="menu-item flex items-center gap-2 py-1 px-4 hover:bg-gray-200 dark:hover:bg-gray-700 block <?= $currentPage === 'users.php' ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : '' ?>">
-                        <div class="flex items-center justify-center w-10 h-10"><i class="fas fa-users"></i> </div>
-                        <span class="menu-text">Manage Users</span>
-                    </a>
-                <?php endif; ?>
+                    <div class="flex items-center justify-center w-10 h-10"><i class="fas fa-users"></i> </div>
+                    <span class="menu-text">Manage Users</span>
+                </a>
             </li>
             <li>
-                <?php if ($_SESSION['admin_role'] === 'admin'): ?>
-                    <a href="settings.php"
+                <a href="settings.php"
                     class="menu-item flex items-center gap-2 py-1 px-4 hover:bg-gray-200 dark:hover:bg-gray-700 block <?= $currentPage === 'settings.php' ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : '' ?>">
-                        <div class="flex items-center justify-center w-10 h-10"><i class="fa-solid fa-gear"></i> </div>
-                        <span class="menu-text">Settings</span>
-                    </a>
-                <?php endif; ?>
+                    <div class="flex items-center justify-center w-10 h-10"><i class="fa-solid fa-gear"></i> </div>
+                    <span class="menu-text">Settings</span>
+                </a>
             </li>
         </ul>
     </nav>

@@ -30,10 +30,8 @@
     $totalRows = $totalQuery->fetch_assoc()['total'];
     $totalPages = ceil($totalRows / $limit);
 
-    $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users $searchSql ORDER BY created_at DESC LIMIT $limit OFFSET $offset");
-
     // Fetch users
-    // $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users ORDER BY created_at DESC");
+    $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users $searchSql ORDER BY created_at DESC LIMIT $limit OFFSET $offset");
 ?>
 
 <div class="flex min-h-screen">
@@ -51,10 +49,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-xl w-full transform transition-transform scale-95">
                     <!-- <button id="closeModalBtn" class="absolute top-2 right-2 text-gray-500 hover:text-red-500">✖</button> -->
                     <form id="userForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 gap-4" data-mode="<?= isset($_GET['edit']) ? 'update' : 'add' ?>">
-                        
-                        <h2 class="text-2xl font-bold">
-                            <?= isset($_GET['edit']) ? 'Update User' : 'Add New User' ?>
-                        </h2>
+                        <h2 class="text-2xl font-bold"> <?= isset($_GET['edit']) ? 'Update User' : 'Add New User' ?> </h2>
                         <!-- Notifications -->
                         <?php if (isset($_SESSION['success'])): ?>
                             <div id="successMessage" class="bg-green-500 text-white p-3 rounded mb-4">
@@ -147,9 +142,11 @@
 
             <div class="flex flex-row mb-6">
                 <h3 class="flex-1 text-2xl font-semibold mb-2">Users List Management</h3>
+                <?php if ($_SESSION['admin_role'] === 'admin'): ?>
                 <button id="openModalBtn" class="w-26 flex-none bg-green-500 text-white text-sm px-4 py-2 rounded hover:bg-green-600">
                     <i class="fa-solid fa-user-plus mr-1"></i> Add New
                 </button>
+                <?php endif; ?>
             </div>
 
             <!-- ✅ 2. Add search + per page -->
@@ -170,7 +167,9 @@
                         <th class="p-2 border dark:border-gray-600">Role</th>
                         <th class="p-2 border dark:border-gray-600">Created At</th>
                         <th class="p-2 border dark:border-gray-600">Updated At</th>
+                        <?php if ($_SESSION['admin_role'] === 'admin'): ?>
                         <th class="p-2 border dark:border-gray-600">Actions</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -201,6 +200,7 @@
                             </td>
                             <td class="p-2 border dark:border-gray-600"><?= $user['created_at'] ?></td>
                             <td class="p-2 border dark:border-gray-600"><?= $user['updated_at'] ?? '—' ?></td>
+                            <?php if ($_SESSION['admin_role'] === 'admin'): ?>
                             <td class="p-2 border dark:border-gray-600 text-center">
                                 <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'] ?? '')) ?>&role=<?= urlencode(trim($user['role'] ?? '')) ?>"
                                     class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
@@ -210,6 +210,7 @@
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>

@@ -140,7 +140,7 @@
                 </label>
                 <label class="flex flex-col">
                     <span class="text-gray-700 dark:text-gray-300 after:ml-0.5 after:text-red-500 after:content-['*']">Level</span>
-                    <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="number" name="level" placeholder="0-100%" min="1" max="100" required value="<?= htmlspecialchars($editSkill['level'] ?? '') ?>">`
+                    <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="number" name="level" placeholder="0-100%" min="1" max="100" required value="<?= htmlspecialchars($editSkill['level'] ?? '') ?>">
                 </label>
                 
                 <button name="<?= $editSkill ? 'update_skill' : 'add_skill' ?>" type="submit"

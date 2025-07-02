@@ -78,6 +78,21 @@
                     title="<?= $_SESSION['admin_role'] !== 'admin' ? 'You do not have permission to update' : '' ?>">
                     Update
                 </button>
+                <?php
+                    require_once 'components/disable-action.php';
+
+                    if ($_SESSION['admin_role'] !== 'admin') {
+                        renderDisabledAction('Edit', 'Only admins can edit users', 'fas fa-edit', false);
+                        renderDisabledAction('Delete', 'Only admins can delete users', 'fas fa-trash');
+                    } else {
+                        // Actual Edit/Delete buttons here
+                        echo '<a href="edit.php?id=1" class="text-blue-500 hover:underline"><i class="fas fa-edit"></i> Edit</a>';
+                        echo '<form method="POST" action="delete.php" class="inline">
+                                <button class="text-red-500 hover:underline"><i class="fas fa-trash"></i> Delete</button>
+                            </form>';
+                    }
+                ?>
+
             </form>
         </div>
     </main>

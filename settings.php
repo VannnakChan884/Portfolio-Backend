@@ -1,5 +1,5 @@
-<?php include 'includes/header.php'; ?>
 <?php
+    require_once 'includes/header.php';
     require_once 'includes/functions.php';
     require_once 'components/disable-action.php';
 
@@ -69,7 +69,7 @@
 
                 <input type="text" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded opacity-50 cursor-not-allowed"':''?> name="Github" placeholder="Github URL" value="<?= $settings['github'] ?? '' ?>" class="w-full p-2 border dark:bg-gray-700 dark:border-gray-600 rounded">
                 <!-- Upload Box -->
-                <div id="uploadBox" class="dark:bg-gray-700 dark:border-gray-600 border-2 border-dashed border-gray-300 bg-gray-50 text-center rounded-lg cursor-pointer hover:bg-gray-100 transition <?= isset($_GET['logo']) ? 'hidden' : '' ?>">
+                <div id="uploadBox" class="dark:bg-gray-700 dark:border-gray-600 border-2 border-dashed border-gray-300 bg-gray-50 text-center rounded-lg cursor-pointer hover:bg-gray-100 transition">
                     <label for="logo" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="block p-6 opacity-50 cursor-not-allowed"':'class="block p-6 cursor-pointer"'?>>
                         <span class="block text-gray-700 dark:text-gray-300">Drag & drop your files here or
                             <span class="text-blue-600 underline">browse</span>
@@ -77,14 +77,6 @@
                         <input id="logo" type="file" name="logo" accept="image/*" <?= $_SESSION['admin_role'] !== 'admin' ? 'disabled class="hidden opacity-50 cursor-not-allowed"':'class="hidden" '?>>
                         <p class="text-xs text-gray-500 mt-2">File must be .jpg .jpeg .png .gif .bmp</p>
                     </label>
-                </div>
-
-                <!-- Image Preview + Remove -->
-                <div id="previewContainer" class="relative mt-2 w-max <?= isset($_GET['logo']) ? '' : 'hidden' ?>">
-                    <img id="imagePreview" src="<?= $_GET['logo'] ?? '' ?>" alt="Preview" class="w-40 h-40 object-cover rounded-lg">
-                    <button type="button" id="removeImageBtn" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full text-xs flex items-center justify-center">
-                        <i class="fa-solid fa-xmark text-white"></i>
-                    </button>
                 </div>
 
                 <?php if (!empty($settings['logo'])): ?>
@@ -104,52 +96,4 @@
         </div>
     </main>
 </div>
-<script type="module">
-        import { initImagePreview, initCancelButton, initUpdateButtonDisable } from './assets/js/form-utils.js';
-
-        initImagePreview('input[name="user_profile"]', '#imagePreview', '#removeImageBtn');
-        initCancelButton('form', '#cancelBtn');
-
-        const dropArea = document.getElementById('uploadBox');
-        const fileInput = document.getElementById('user_profile');
-
-        // Prevent default drag behaviors
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, e => {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-        });
-
-        // Highlight on dragover
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => {
-                dropArea.classList.add('bg-blue-50', 'border-blue-500');
-            });
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => {
-                dropArea.classList.remove('bg-blue-50', 'border-blue-500');
-            });
-        });
-
-        // Handle dropped files
-        dropArea.addEventListener('drop', (e) => {
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type.startsWith('image/')) {
-                fileInput.files = files;
-
-                // Show preview
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    document.getElementById('imagePreview').src = event.target.result;
-                    document.getElementById('previewContainer').classList.remove('hidden');
-                    document.getElementById('fileActionBtn').classList.remove('hidden');
-                    dropArea.classList.add('hidden');
-                };
-                reader.readAsDataURL(files[0]);
-            }
-        });
-    </script>
 <?php include 'includes/footer.php'; ?>

@@ -1,7 +1,7 @@
-
-<?php require_once 'includes/header.php'; ?>
 <?php
+    require_once 'includes/header.php';
     require_once 'includes/functions.php';
+    require_once 'components/disable-action.php';
 
     // Handle Assign Role
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign_role_submit'])) {
@@ -32,7 +32,7 @@
     $totalPages = ceil($totalRows / $limit);
 
     // Fetch users
-    $users = $conn->query("SELECT id, username, email, full_name, user_profile, role, created_at, updated_at FROM users $searchSql ORDER BY created_at DESC LIMIT $limit OFFSET $offset");
+    $users = $conn->query("SELECT * FROM users $searchSql ORDER BY created_at DESC LIMIT $limit OFFSET $offset");
 ?>
 
 <div class="flex min-h-screen">
@@ -90,7 +90,7 @@
                             ?>
                             <label class="flex flex-col">
                                 <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Role</span>
-                                <select name="role" class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" required>
+                                <select id="edit-role" name="role" class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" required>
                                     <option value="admin" <?= $selectedRole === 'admin' ? 'selected' : '' ?>>Admin</option>
                                     <option value="user" <?= $selectedRole === 'user' ? 'selected' : '' ?>>User</option>
                                 </select>
@@ -175,6 +175,10 @@
                 </thead>
                 <tbody>
                     <?php while ($user = $users->fetch_assoc()): ?>
+                        <?php
+                            $viewingDefaultAdmin = $user['is_default_admin'] == 1;
+                            $loggedInUserIsDefaultAdmin = isset($_SESSION['is_default_admin']) && $_SESSION['is_default_admin'] == 1;
+                        ?>
                         <tr>
                             <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($user['username']) ?></td>
                             <td class="p-2 border dark:border-gray-600"><?= htmlspecialchars($user['email']) ?></td>
@@ -187,30 +191,71 @@
                                 <?php if (empty($user['role'])): ?>
                                     <form method="POST" class="flex items-center gap-2">
                                         <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                                        <select name="assign_role" class="border p-1 rounded">
-                                            <option value="user">User</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                        <button type="submit" name="assign_role_submit"
-                                            class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">Assign</button>
+                                        <?php if ($_SESSION['admin_role'] !== 'admin'):?>
+                                            <select name="assign_role" class="hidden border p-1 rounded">
+                                                <option value="user">User</option>
+                                                <option value="admin">Admin</option>
+                                            </select>
+                                        <?php else: ?>
+                                            <select name="assign_role" class="border p-1 rounded">
+                                                <option value="user">User</option>
+                                                <option value="admin">Admin</option>
+                                            </select>
+                                        <?php endif; ?>
+                                        <?php if ($_SESSION['admin_role'] !== 'admin'):?>
+                                            <span class="text-sm px-2 py-1 rounded bg-yellow-100 text-yellow-600">Admin not approve yet!</span>
+                                            <button type="submit" name="assign_role_submit" class="hidden bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">Assign</button> 
+                                        <?php else: ?>
+                                            <button type="submit" name="assign_role_submit" class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700">Assign</button> 
+                                        <?php endif; ?>
                                     </form>
                                 <?php else: ?>
-                                    <span
-                                        class="text-sm px-2 py-1 rounded bg-blue-100 text-blue-600"><?= htmlspecialchars($user['role']) ?></span>
+                                    <?php if ($viewingDefaultAdmin):?>
+                                        <span class="text-sm px-2 py-1 rounded bg-green-100 text-green-600">Super <?= htmlspecialchars($user['role']) ?></span>
+                                    <?php elseif ($user['role'] === 'admin'): ?>
+                                        <span class="text-sm px-2 py-1 rounded bg-yellow-100 text-yellow-600"><?= htmlspecialchars($user['role']) ?></span>
+                                    <?php else: ?>
+                                        <span class="text-sm px-2 py-1 rounded bg-orange-100 text-orange-600"><?= htmlspecialchars($user['role']) ?></span>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </td>
                             <td class="p-2 border dark:border-gray-600"><?= $user['created_at'] ?></td>
                             <td class="p-2 border dark:border-gray-600"><?= $user['updated_at'] ?? '—' ?></td>
                             <?php if ($_SESSION['admin_role'] === 'admin'): ?>
-                            <td class="p-2 border dark:border-gray-600 text-center">
-                                <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'] ?? '')) ?>&role=<?= urlencode(trim($user['role'] ?? '')) ?>"
-                                    class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
-                                    <i class="fa-solid fa-user-pen"></i>
-                                </a>
-                                <button data-delete-id="<?= $user['id'] ?>" class="text-sm px-2 py-1 rounded bg-red-100 text-red-600">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </td>
+                                <td class="p-2 border dark:border-gray-600 text-center">
+                                    <?php if ($viewingDefaultAdmin && !$loggedInUserIsDefaultAdmin): ?>
+                                        <button class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600 opacity-50 cursor-not-allowed" disabled title="Only default admin can edit this user">
+                                            <i class="fa-solid fa-user-pen"></i>
+                                        </button>
+                                    <?php else: ?>
+                                        <a href="users.php?edit=<?= $user['id'] ?>&username=<?= urlencode(trim($user['username'])) ?>&email=<?= urlencode(trim($user['email'])) ?>&full_name=<?= urlencode(trim($user['full_name'])) ?>&user_profile=<?= urlencode(trim($user['user_profile'] ?? '')) ?>&role=<?= urlencode(trim($user['role'] ?? '')) ?>&is_default_admin=<?= $user['is_default_admin'] ?>"
+                                        class="inline-block text-sm px-2 py-1 mr-2 rounded bg-orange-100 text-orange-600">
+                                            <i class="fa-solid fa-user-pen"></i>
+                                        </a>
+                                    <?php endif; ?>
+
+                                    <?php if ($user['is_default_admin']): ?>
+                                        <button class="text-sm px-2 py-1 rounded bg-red-100 text-red-600 opacity-50 cursor-not-allowed" disabled title="Default admin cannot be deleted">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    <?php else: ?>
+                                        <?php
+                                            $isViewingSelf = $_SESSION['admin_id'] == $user['id'];
+                                            $isDefaultAdmin = $user['is_default_admin'];
+                                        ?>
+                                        <?php if ($isDefaultAdmin || $isViewingSelf): ?>
+                                            <button class="text-sm px-2 py-1 rounded bg-red-100 text-red-600 opacity-50 cursor-not-allowed"
+                                                disabled
+                                                title="<?= $isDefaultAdmin ? 'Default admin cannot be deleted' : 'You cannot delete your own account' ?>">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        <?php else: ?>
+                                            <button data-delete-id="<?= $user['id'] ?>" class="text-sm px-2 py-1 rounded bg-red-100 text-red-600">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </td>
                             <?php endif; ?>
                         </tr>
                     <?php endwhile; ?>
@@ -394,5 +439,14 @@
             const limit = document.getElementById('perPage').value;
             window.location.href = `?search=${encodeURIComponent(search)}&limit=${limit}&page=1`;
         });
+
+        // ✅ Disable role dropdown if default admin
+        const roleField = document.getElementById("edit-role");
+        const isDefaultAdmin = urlParams.get("is_default_admin");
+
+        if (isEditMode && isDefaultAdmin === "1" && roleField) {
+            roleField.setAttribute("disabled", "disabled");
+            roleField.title = "Default admin role cannot be changed";
+        }
     </script>
 <?php include 'includes/footer.php'; ?>

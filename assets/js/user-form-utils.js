@@ -57,6 +57,25 @@ export function handleUserFormAjax(formSelector, endpoint) {
     });
 }
 
+export function populateEditForm(user) {
+    const nameField = document.getElementById("edit-name");
+    const emailField = document.getElementById("edit-email");
+    const roleField = document.getElementById("edit-role");
+
+    if (nameField) nameField.value = user.name;
+    if (emailField) emailField.value = user.email;
+    if (roleField) {
+        roleField.value = user.role;
+        if (user.is_default_admin === "1" || user.is_default_admin === 1) {
+            roleField.setAttribute("disabled", "disabled");
+            roleField.title = "Default admin role cannot be changed";
+        } else {
+            roleField.removeAttribute("disabled");
+            roleField.removeAttribute("title");
+        }
+    }
+}
+
 // Utility toast
 function showSuccess(message) {
     const toast = document.getElementById('toastSuccess');

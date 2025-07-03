@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 02, 2025 at 08:42 AM
+-- Generation Time: Jul 03, 2025 at 08:49 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.4.0
 
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `login_codes` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `login_codes`
@@ -150,7 +150,11 @@ INSERT INTO `login_codes` (`id`, `user_id`, `code`, `expires_at`, `is_used`, `cr
 (19, 78, '677723', '2025-07-02 13:59:56', 1, '2025-07-02 13:49:56'),
 (20, 79, '076000', '2025-07-02 14:08:28', 1, '2025-07-02 13:58:28'),
 (21, 80, '782218', '2025-07-02 14:24:19', 1, '2025-07-02 14:14:19'),
-(22, 81, '903310', '2025-07-02 15:11:39', 1, '2025-07-02 15:01:39');
+(22, 81, '903310', '2025-07-02 15:11:39', 1, '2025-07-02 15:01:39'),
+(23, 82, '023317', '2025-07-03 11:08:44', 1, '2025-07-03 10:58:44'),
+(24, 84, '585553', '2025-07-03 13:09:16', 1, '2025-07-03 12:59:16'),
+(25, 85, '660077', '2025-07-03 15:00:22', 1, '2025-07-03 14:50:22'),
+(26, 86, '878102', '2025-07-03 15:04:20', 1, '2025-07-03 14:54:20');
 
 -- --------------------------------------------------------
 
@@ -223,7 +227,7 @@ INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALU
 (2, 'email', 'vannakchan884@gmail.com', '2025-06-24 05:52:39'),
 (3, 'phone', '(+855) 886004544', '2025-06-24 05:52:39'),
 (4, 'description', 'Hello', '2025-06-24 06:17:15'),
-(5, 'logo', 'assets/uploads/6864efdd1b852_vannak1.jpg', '2025-07-02 08:37:49'),
+(5, 'logo', 'assets/uploads/6865fa3e520ce_me.png', '2025-07-03 03:34:22'),
 (6, 'facebook', 'https://www.facebook.com/chan.vannak.884/', '2025-06-24 06:16:34'),
 (7, 'telegram', 'https://t.me/vannak_IT', '2025-06-24 06:16:34'),
 (8, 'github', 'https://github.com/VannnakChan884', '2025-06-24 06:16:34');
@@ -267,24 +271,25 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `full_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_profile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `role` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `is_default_admin` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `user_profile`, `role`, `created_at`, `updated_at`) VALUES
-(30, 'sreynoy', 'khinsreynoy547@gmail.com', '$2y$10$uH0fKtX6CIp2wEKBGMqTJOhwkyKXX.rp9sH8NT9/hRQTKAYxdEL/q', 'Khin Sreynoy', 'assets/uploads/1751443576_298037db.jpg', 'admin', '2025-06-27 05:50:58', '2025-07-02 08:06:16'),
-(80, 'Chan Vannak', 'vannakchan884@gmail.com', NULL, 'Chan Vannak', 'assets/uploads/1751443787_34f66939.jpg', 'admin', '2025-07-02 07:14:19', '2025-07-02 08:09:47'),
-(81, 'H7 Vannak-資訊-柬1廠', 'h7ha.vannak@gmail.com', NULL, 'H7 Vannak-資訊-柬1廠', 'assets/uploads/1751444481_0a336260.jpg', 'user', '2025-07-02 08:01:39', '2025-07-02 08:21:21');
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `user_profile`, `role`, `created_at`, `updated_at`, `is_default_admin`) VALUES
+(30, 'sreynoy', 'khinsreynoy547@gmail.com', '$2y$10$uH0fKtX6CIp2wEKBGMqTJOhwkyKXX.rp9sH8NT9/hRQTKAYxdEL/q', 'Khin Sreynoy', 'assets/uploads/1751522771_dcfe8bc1.jpg', 'admin', '2025-06-27 05:50:58', '2025-07-03 07:49:56', 1),
+(85, 'H7 Vannak-資訊-柬1廠', 'h7ha.vannak@gmail.com', NULL, 'H7 Vannak-資訊-柬1廠', 'https://lh3.googleusercontent.com/a/ACg8ocJjy9r39tl7TiWBjrUSsyxKOq973kyhP4vB-PZGy2xOpLVbeGU=s96-c', 'admin', '2025-07-03 07:50:22', '2025-07-03 08:30:39', 0),
+(86, 'Chan Vannak', 'vannakchan884@gmail.com', NULL, 'Chan Vannak', 'https://lh3.googleusercontent.com/a/ACg8ocJs_S8o-utujtYCvNGavJ2rZurHYYwaJYkdsJ-vCuIncy-gCy1FTg=s96-c', 'user', '2025-07-03 07:54:20', '2025-07-03 08:41:37', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

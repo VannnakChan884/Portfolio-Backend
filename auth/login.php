@@ -8,13 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, password, role FROM users WHERE username = ?");
+    $stmt = $conn->prepare("SELECT id, password, role, is_default_admin FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-        $stmt->bind_result($id, $hashed_password, $role);
+        $stmt->bind_result($id, $hashed_password, $role, $is_default_admin);
         $stmt->fetch();
 
         if (!password_verify($password, $hashed_password)) {
@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['admin_logged_in'] = true;
                 $_SESSION['admin_id'] = $id;
                 $_SESSION['admin_role'] = $role;
+                $_SESSION['is_default_admin'] = $is_default_admin;
                 header("Location: ../dashboard.php");
                 exit;
             }

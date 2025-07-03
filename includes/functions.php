@@ -55,8 +55,24 @@ function handleUpdateUser($conn) {
     $full_name = trim($_POST['full_name']);
     $existingProfile = $_POST['existing_profile'] ?? 'assets/uploads/default.png';
     $profilePath = $existingProfile;
-    $role = $_POST['role'];
+    // Default to null if not submitted
+    $role = $_POST['role'] ?? null;
 
+    // Always force role to 'admin' if user is default admin
+    $stmt = $conn->prepare("SELECT is_default_admin FROM users WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+        if ($row['is_default_admin'] == 1) {
+            $role = 'admin'; // Force role
+        } elseif ($role === null) {
+            return "Role is required.";
+        }
+    }
+
+
+    // ✅ Handle image upload if any
     if (!empty($_FILES['user_profile']['name'])) {
         $originalName = basename($_FILES['user_profile']['name']);
         $extension = pathinfo($originalName, PATHINFO_EXTENSION);

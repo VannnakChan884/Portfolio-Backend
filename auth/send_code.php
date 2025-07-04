@@ -123,7 +123,7 @@ function send_login_code($conn, $userId) {
         $mail->addAddress($email, $username);
 
         $mail->isHTML(true);
-        $mail->Subject = '🔐 Your Login Verification Code';
+        $mail->Subject = 'Your Login Verification Code';
         $mail->Body    = "
             <p>Hi <strong>$username</strong>,</p>
             <p>Your login code is:</p>

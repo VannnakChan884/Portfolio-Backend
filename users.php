@@ -83,18 +83,27 @@
                                 <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Email</span>
                                 <input class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" type="email" name="email" placeholder="you@example.com" value="<?= $_GET['email'] ?? '' ?>" required>
                             </label>
-                        
+
                             <?php
-                                // Default role for form value
                                 $selectedRole = $_GET['role'] ?? 'user';
+                                $editingOwnAccount = isset($_GET['edit']) && $_GET['edit'] == $_SESSION['admin_id'];
                             ?>
                             <label class="flex flex-col">
                                 <span class="text-gray-700 after:ml-0.5 after:text-red-500 after:content-['*']">Role</span>
-                                <select id="edit-role" name="role" class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded" required>
+                                <select id="edit-role" name="role"
+                                    class="dark:bg-gray-700 border dark:border-gray-600 p-2 rounded"
+                                    <?= $editingOwnAccount ? 'disabled title="You cannot change your own role."' : '' ?>
+                                    required>
                                     <option value="admin" <?= $selectedRole === 'admin' ? 'selected' : '' ?>>Admin</option>
                                     <option value="user" <?= $selectedRole === 'user' ? 'selected' : '' ?>>User</option>
                                 </select>
+
+                                <?php if ($editingOwnAccount): ?>
+                                    <!-- Hidden input to preserve current role (since disabled selects are not submitted) -->
+                                    <input type="hidden" name="role" value="<?= htmlspecialchars($selectedRole) ?>">
+                                <?php endif; ?>
                             </label>
+
                         </div>
 
                         <!-- Password field shown only in add mode -->
@@ -318,7 +327,7 @@
 
         // Delete user
         setupDeleteModal({
-            endpoint: 'delete_user.php?id='
+            endpoint: 'user-handler.php'
         });
 
         initImagePreview('input[name="user_profile"]', '#imagePreview', '#removeImageBtn');

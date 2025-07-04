@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="text-center text-sm">
             Didn’t receive a code?
-            <a href="?resend=true" class="text-blue-600 hover:underline">Resend Code</a>
+            <a href="verify.php?resend=true" class="text-blue-500 underline hover:text-blue-700">Resend Code</a>
         </div>
     </form>
 </body>

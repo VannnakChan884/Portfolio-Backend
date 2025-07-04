@@ -4,7 +4,7 @@ export function setupDeleteModal({
     cancelBtnId = '#cancelDeleteBtn',
     toastId = '#toastSuccess',
     deleteBtnSelector = '[data-delete-id]',
-    endpoint = 'delete.php?id='
+    endpoint = 'user-handler.php' // New centralized handler
 }) {
     const modal = document.querySelector(modalId);
     const confirmBtn = document.querySelector(confirmBtnId);
@@ -28,36 +28,41 @@ export function setupDeleteModal({
         deleteTargetId = null;
     });
 
-    confirmBtn?.addEventListener('click', () => {
+    confirmBtn?.addEventListener('click', async () => {
         if (!deleteTargetId) return;
 
-        fetch(`${endpoint}${deleteTargetId}`, {
-            method: 'GET',
-        })
-            .then(async res => {
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    return res.json();
-                } else {
-                    const text = await res.text();
-                    throw new Error("Not JSON: " + text);
-                }
-            })
-            .then(data => {
-                console.log("Server response:", data);
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    action: 'delete_user',
+                    id: deleteTargetId
+                })
+            });
+
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+
                 if (data.success) {
                     deleteRow.classList.add('opacity-0', 'transition', 'duration-300');
                     setTimeout(() => deleteRow.remove(), 200);
                     toast?.classList.remove('hidden');
                     setTimeout(() => toast?.classList.add('hidden'), 3000);
                 } else {
-                    alert(data.message || 'Failed to delete item.');
+                    alert(data.message || 'Failed to delete user.');
                 }
-            })
-            .catch(err => {
-                console.error("Fetch error:", err); // Updated to show full error
-                alert('Server error: ' + err.message);
-            });
+            } else {
+                const text = await response.text();
+                throw new Error("Not JSON: " + text);
+            }
+        } catch (err) {
+            console.error("Delete request error:", err);
+            alert('Server error: ' + err.message);
+        }
 
         modal.classList.add('hidden');
         deleteTargetId = null;

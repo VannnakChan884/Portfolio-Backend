@@ -87,8 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $mail->Body    = "Hi $username,\n\nYour login code is: $loginCode\nThis code expires in 10 minutes!\nPlease wait for an admin to approve your access.";
 
                     $mail->send();
-                    $success = "Registered successfully! Check your email for the login code.";
-                    header("Location: auth/login.php?registered=1");
+                    // $success = "Registered successfully! Check your email for the login code.";
+                    $_SESSION['register_success'] = "✅ Registered successfully! Please check your email for the login code.";
+                    // header("Location: auth/login.php?registered=1");
+                    header("Location: auth/verify.php");
                     exit;
                 } catch (Exception $e) {
                     $conn->query("DELETE FROM users WHERE id = $userId");

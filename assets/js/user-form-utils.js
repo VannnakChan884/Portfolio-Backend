@@ -1,3 +1,5 @@
+import { toast } from './toast-utils.js';
+
 export function handleUserFormAjax(formSelector, endpoint) {
     const form = document.querySelector(formSelector);
     if (!form) return;
@@ -26,7 +28,8 @@ export function handleUserFormAjax(formSelector, endpoint) {
             const result = await response.json();
 
             if (result.success) {
-                showSuccess(result.message || 'User saved successfully.');
+                // toast(result.message || 'User saved successfully.');
+                toast(result.message, result.status);
 
                 // Close modal after success
                 const modal = document.getElementById('addUserModal');
@@ -44,12 +47,13 @@ export function handleUserFormAjax(formSelector, endpoint) {
                     window.location.href = cleanUrl;
                 }, 1000); // slight delay for user to see message
             } else {
-                showError(result.message || 'Something went wrong.');
+                // toast(result.message || 'Something went wrong.');
+                toast(result.message, 'error');
             }
 
         } catch (err) {
             console.error('Error submitting form:', err);
-            showError('Failed to send request.');
+            toast('Failed to send request.');
         }
 
         submitBtn.disabled = false;
@@ -74,29 +78,4 @@ export function populateEditForm(user) {
             roleField.removeAttribute("title");
         }
     }
-}
-
-// Utility toast
-function showSuccess(message) {
-    const toast = document.getElementById('toastSuccess');
-    if (toast) {
-        toast.textContent = message;
-        toast.classList.remove('hidden');
-        setTimeout(() => {
-            toast.classList.add('hidden');
-        }, 6000);
-    } else {
-        alert(message);
-    }
-}
-
-function showError(message) {
-    let errorBox = document.getElementById('errorMessage');
-    if (!errorBox) {
-        errorBox = document.createElement('div');
-        errorBox.id = 'errorMessage';
-        errorBox.className = 'bg-red-500 text-white p-3 rounded mb-4';
-        form.prepend(errorBox);
-    }
-    errorBox.textContent = message;
 }

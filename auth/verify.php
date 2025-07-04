@@ -7,20 +7,21 @@ if (!isset($_SESSION['pending_user_id'])) {
     exit;
 }
 
-$error = '';
-$success = '';
+$success = $_SESSION['register_success'] ?? $_SESSION['resend_success'] ?? '';
+$error = $_SESSION['resend_error'] ?? '';
+unset($_SESSION['register_success'], $_SESSION['resend_success'], $_SESSION['resend_error']);
 
 // Handle resend request
 if (isset($_GET['resend']) && $_GET['resend'] === 'true') {
-    require_once 'send_code.php'; // We'll create this file to handle resending
+    require_once 'send_code.php';
     $result = send_login_code($conn, $_SESSION['pending_user_id']);
     if ($result === true) {
-        $success = "A new code has been sent to your email.";
-        // Redirect to remove query
-        header("Location: verify.php");
+        $_SESSION['resend_success'] = "✅ A new code has been sent to your email.";
     } else {
-        $error = $result;
+        $_SESSION['resend_error'] = $result;
     }
+    header("Location: verify.php");
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -48,13 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $getUser->fetch();
 
         if (empty($role)) {
-            // ❌ Not approved yet
             $_SESSION['login_error'] = "Your account is registered but not approved yet. Please contact the administrator.";
             header("Location: login.php");
             exit;
         }
 
-        // ✅ Approved → Login
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_id'] = $userId;
         $_SESSION['admin_role'] = $role;
@@ -67,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,25 +73,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Verify Code</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex justify-center items-center h-screen">
+<body class="bg-gray-100 flex justify-center items-center h-screen relative">
+
+    <!-- ✅ Form -->
     <form method="POST" class="bg-white p-6 rounded shadow-md w-full max-w-sm">
         <h2 class="text-xl font-bold mb-4 text-center">Verify Your Code</h2>
 
-        <?php if (!empty($error)): ?>
-            <p class="bg-red-100 text-red-600 p-2 rounded mb-2"><?= htmlspecialchars($error) ?></p>
-        <?php endif; ?>
-        <?php if (!empty($success)): ?>
-            <p class="bg-green-100 text-green-600 p-2 rounded mb-2"><?= htmlspecialchars($success) ?></p>
-        <?php endif; ?>
-
         <input type="text" name="code" placeholder="Enter 6-digit code" required class="w-full p-2 border rounded mb-4" />
 
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 mb-2">Verify & Login</button>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 mb-2">Verify</button>
 
         <div class="text-center text-sm">
-            Didn’t receive a code?
+            Didn't receive a code?
             <a href="verify.php?resend=true" class="text-blue-500 underline hover:text-blue-700">Resend Code</a>
         </div>
     </form>
+
+    <script type="module">
+        import { toast } from '../assets/js/toast-utils.js';
+
+        <?php if (!empty($success) || !empty($error)): ?>
+            toast(<?= json_encode($success ?: $error) ?>, "<?= $success ? 'success' : 'error' ?>");
+        <?php endif; ?>
+    </script>
 </body>
 </html>

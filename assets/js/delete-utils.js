@@ -1,15 +1,14 @@
+import { toast } from './toast-utils.js';
 export function setupDeleteModal({
     modalId = '#deleteConfirmModal',
     confirmBtnId = '#confirmDeleteBtn',
     cancelBtnId = '#cancelDeleteBtn',
-    toastId = '#toastSuccess',
     deleteBtnSelector = '[data-delete-id]',
     endpoint = 'user-handler.php' // New centralized handler
 }) {
     const modal = document.querySelector(modalId);
     const confirmBtn = document.querySelector(confirmBtnId);
     const cancelBtn = document.querySelector(cancelBtnId);
-    const toast = document.querySelector(toastId);
 
     let deleteTargetId = null;
     let deleteRow = null;
@@ -50,10 +49,9 @@ export function setupDeleteModal({
                 if (data.success) {
                     deleteRow.classList.add('opacity-0', 'transition', 'duration-300');
                     setTimeout(() => deleteRow.remove(), 200);
-                    toast?.classList.remove('hidden');
-                    setTimeout(() => toast?.classList.add('hidden'), 3000);
+                    toast(data.message || 'User deleted successfully.', data.status || 'success');
                 } else {
-                    alert(data.message || 'Failed to delete user.');
+                    toast(data.message || 'Failed to delete user.', data.status || 'error');
                 }
             } else {
                 const text = await response.text();
@@ -61,7 +59,7 @@ export function setupDeleteModal({
             }
         } catch (err) {
             console.error("Delete request error:", err);
-            alert('Server error: ' + err.message);
+            toast('Server error: ' + err.message, 'error');
         }
 
         modal.classList.add('hidden');

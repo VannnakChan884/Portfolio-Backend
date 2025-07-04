@@ -51,19 +51,14 @@
                     <!-- <button id="closeModalBtn" class="absolute top-2 right-2 text-gray-500 hover:text-red-500">✖</button> -->
                     <form id="userForm" method="post" enctype="multipart/form-data" class="grid grid-cols-1 gap-4" data-mode="<?= isset($_GET['edit']) ? 'update' : 'add' ?>">
                         <h2 class="text-2xl font-bold"> <?= isset($_GET['edit']) ? 'Update User' : 'Add New User' ?> </h2>
-                        <!-- Notifications -->
-                        <?php if (isset($_SESSION['success'])): ?>
-                            <div id="successMessage" class="bg-green-500 text-white p-3 rounded mb-4">
-                                <?= htmlspecialchars($_SESSION['success']) ?>
+                        
+                        <!-- ✅ Toast Notification -->
+                        <?php if (!empty($success) || !empty($error)): ?>
+                            <div id="toast" class="fixed top-5 right-5 z-50 px-4 py-3 rounded shadow-lg transition-all duration-300">
+                                <?= htmlspecialchars($success ?: $error) ?>
                             </div>
-                            <?php unset($_SESSION['success']); endif; ?>
+                        <?php endif; ?>
 
-                        <?php if (isset($_SESSION['error'])): ?>
-
-                        <div id="errorMessage" class="bg-red-500 text-white p-3 rounded mb-4">
-                            <?= htmlspecialchars($_SESSION['error']) ?>
-                        </div>
-                        <?php unset($_SESSION['error']); endif; ?>
                         <input type="hidden" name="id" value="<?= $_GET['edit'] ?? '' ?>">
 
                         <!-- Text Inputs -->
@@ -198,7 +193,7 @@
                             </td>
                             <td class="p-2 border dark:border-gray-600 text-center">
                                 <?php if (empty($user['role'])): ?>
-                                    <form method="POST" class="flex items-center gap-2">
+                                    <form method="POST" class="flex items-center justify-center gap-2">
                                         <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
                                         <?php if ($_SESSION['admin_role'] !== 'admin'):?>
                                             <select name="assign_role" class="hidden border p-1 rounded">
@@ -312,7 +307,7 @@
             </div>
 
             <!-- Toast -->
-            <div id="toastSuccess" class="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg hidden transition">User deleted successfully.</div>
+            <!-- <div id="toastSuccess" class="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg hidden transition">User deleted successfully.</div> -->
         </div>
      </main>
 </div>
@@ -321,6 +316,7 @@
         import { initImagePreview, initCancelButton, initUpdateButtonDisable } from './assets/js/form-utils.js';
         import { setupDeleteModal } from './assets/js/delete-utils.js';
         import { handleUserFormAjax } from './assets/js/user-form-utils.js';
+        import { toast } from './assets/js/toast-utils.js';
 
         // Form user
         handleUserFormAjax('#addUserModal form', 'user-handler.php');
@@ -457,5 +453,9 @@
             roleField.setAttribute("disabled", "disabled");
             roleField.title = "Default admin role cannot be changed";
         }
+
+        <?php if (!empty($success) || !empty($error)): ?>
+            toast("<?= htmlspecialchars($success ?: $error) ?>", "<?= $success ? 'success' : 'error' ?>");
+        <?php endif; ?>
     </script>
 <?php include 'includes/footer.php'; ?>

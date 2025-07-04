@@ -13,7 +13,7 @@
         <!-- Message Icon with Unread Badge -->
         <a href="messages.php" id="message-icon" class="relative flex items-center justify-center w-10 h-10 p-2 rounded-lg dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700">
             <i class="fa-solid fa-envelope text-lg"></i>
-            <span id="unread-badge" class="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold animate-bounce p-1.5 rounded-full leading-none shadow"></span>
+            <span id="unread-badge" class="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold animate-bounce p-1.5 rounded-full leading-none shadow">0</span>
         </a>
 
         <!-- Dark Mode Toggle -->

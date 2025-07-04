@@ -1,52 +1,62 @@
 <?php
-    session_start();
+session_start();
 
-    // Redirect to login if not authenticated
-    if (!isset($_SESSION["admin_logged_in"])) {
-        header("Location: auth/login.php");
-        exit();
-    }
+// Redirect to login if not authenticated
+if (!isset($_SESSION["admin_logged_in"])) {
+    header("Location: auth/login.php");
+    exit();
+}
 
-    require_once 'includes/db.php';
+require_once 'includes/db.php';
 
-    // Initialize defaults
-    $siteTitle = 'Admin Dashboard';
-    $userName = 'Admin';
-    $userProfile = 'assets/uploads/default.png'; // fallback image
+// Initialize defaults
+$siteTitle = 'Admin Dashboard';
+$userName = 'Admin';
+$userProfile = 'assets/uploads/default.png'; // fallback image
 
-    // ✅ Prefer session profile if set (Google login)
-    if (!empty($_SESSION['admin_profile'])) {
-        $userProfile = $_SESSION['admin_profile'];
-    }
+// ✅ Prefer session profile if set (Google login)
+if (!empty($_SESSION['admin_profile'])) {
+    $userProfile = $_SESSION['admin_profile'];
+}
 
-    // ✅ Only run user query if session ID exists
-    if (isset($_SESSION['admin_id'])) {
-        $adminId = $_SESSION['admin_id'];
+// ✅ Only run user query if session ID exists
+if (isset($_SESSION['admin_id'])) {
+    $adminId = $_SESSION['admin_id'];
 
-        // Use a prepared statement for security
-        $stmt = $conn->prepare("SELECT username, full_name, user_profile FROM users WHERE id = ?");
-        $stmt->bind_param("i", $adminId);
-        $stmt->execute();
-        $stmt->bind_result($username, $full_name, $user_profile);
-        $stmt->fetch();
-        $stmt->close();
+    // Use a prepared statement for security
+    $stmt = $conn->prepare("SELECT username, full_name, user_profile FROM users WHERE id = ?");
+    $stmt->bind_param("i", $adminId);
+    $stmt->execute();
+    $stmt->bind_result($username, $full_name, $user_profile);
+    $stmt->fetch();
+    $stmt->close();
 
-        $siteTitle = $full_name ?: $siteTitle;
-        $userName = $username ?: $userName;
+    $siteTitle = $full_name ?: $siteTitle;
+    $userName = $username ?: $userName;
 
-        // ✅ Update profile only if it's a local file or valid image
-        if (!empty($user_profile)) {
-            if (filter_var($user_profile, FILTER_VALIDATE_URL)) {
-                $userProfile = $user_profile;
-            } elseif (file_exists($user_profile)) {
-                $userProfile = $user_profile;
-            }
+    // ✅ Update profile only if it's a local file or valid image
+    if (!empty($user_profile)) {
+        if (filter_var($user_profile, FILTER_VALIDATE_URL)) {
+            $userProfile = $user_profile;
+        } elseif (file_exists($user_profile)) {
+            $userProfile = $user_profile;
         }
-        // $userProfile = (isset($user_profile) && file_exists($user_profile)) ? $user_profile : 'assets/uploads/default.png';
     }
+
+    // Fetch top 5 recent messages (unread or all)
+    // Only run if $messages not already set by the page
+    if (!isset($messages)) {
+        $messages = [];
+        $msgQuery = $conn->query("SELECT name, subject, sent_at FROM messages ORDER BY sent_at DESC LIMIT 5");
+        while ($row = $msgQuery->fetch_assoc()) {
+            $messages[] = $row;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" class="">
+
 <head>
     <meta charset="UTF-8" />
     <title><?= htmlspecialchars($userName) ?> - Admin Dashboard</title>
@@ -74,4 +84,5 @@
         }
     </script>
 </head>
+
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">

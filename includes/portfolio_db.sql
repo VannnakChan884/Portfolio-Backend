@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 03, 2025 at 08:49 AM
+-- Generation Time: Jul 04, 2025 at 03:27 PM
 -- Server version: 9.1.0
--- PHP Version: 8.4.0
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `login_codes` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `login_codes`
@@ -154,7 +154,8 @@ INSERT INTO `login_codes` (`id`, `user_id`, `code`, `expires_at`, `is_used`, `cr
 (23, 82, '023317', '2025-07-03 11:08:44', 1, '2025-07-03 10:58:44'),
 (24, 84, '585553', '2025-07-03 13:09:16', 1, '2025-07-03 12:59:16'),
 (25, 85, '660077', '2025-07-03 15:00:22', 1, '2025-07-03 14:50:22'),
-(26, 86, '878102', '2025-07-03 15:04:20', 1, '2025-07-03 14:54:20');
+(26, 86, '878102', '2025-07-03 15:04:20', 1, '2025-07-03 14:54:20'),
+(27, 30, '439801', '2025-07-04 20:57:15', 1, '2025-07-04 20:47:15');
 
 -- --------------------------------------------------------
 
@@ -174,7 +175,20 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `is_read` tinyint(1) DEFAULT '0',
   `sent_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`id`, `name`, `email`, `subject`, `message`, `reply`, `replied_at`, `is_read`, `sent_at`) VALUES
+(16, 'Chan Vannak', 'khinsreynoy547@gmail.com', 'Hello', 'fgfdgdsgf', NULL, NULL, 0, '2025-07-04 14:16:05'),
+(17, 'Vannak', 'vannakchan884@gmail.com', 'Hey', 'dsfadfs', NULL, NULL, 0, '2025-07-04 14:21:21'),
+(18, 'Test1', 'test1@gmail.com', 'test', 'testesererew', NULL, NULL, 0, '2025-07-04 14:21:33'),
+(19, 'Test', 'test@gmail.com', 'eter', 'erere', NULL, NULL, 0, '2025-07-04 14:21:44'),
+(20, 'tetrt', 'you@example.com', 'ertert', 'rewrtw', NULL, NULL, 0, '2025-07-04 15:22:59'),
+(21, 'afsdfasfd', 'test1@gmail.com', 'sdfasd', 'afdsadf', NULL, NULL, 0, '2025-07-04 15:23:26'),
+(22, 'fsdfafasfa', 'adsa@gmail.com', 'afasfdasfasdfdafsd', 'dsafdafadfasgdafdgfdgahrythrhtrhgreqwrtrwerewtetretretretretretretwretrtar.', NULL, NULL, 0, '2025-07-04 15:24:50');
 
 -- --------------------------------------------------------
 
@@ -289,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `user_profile`, `role`, `created_at`, `updated_at`, `is_default_admin`) VALUES
 (30, 'sreynoy', 'khinsreynoy547@gmail.com', '$2y$10$uH0fKtX6CIp2wEKBGMqTJOhwkyKXX.rp9sH8NT9/hRQTKAYxdEL/q', 'Khin Sreynoy', 'assets/uploads/1751522771_dcfe8bc1.jpg', 'admin', '2025-06-27 05:50:58', '2025-07-03 07:49:56', 1),
 (85, 'H7 Vannak-資訊-柬1廠', 'h7ha.vannak@gmail.com', NULL, 'H7 Vannak-資訊-柬1廠', 'https://lh3.googleusercontent.com/a/ACg8ocJjy9r39tl7TiWBjrUSsyxKOq973kyhP4vB-PZGy2xOpLVbeGU=s96-c', 'admin', '2025-07-03 07:50:22', '2025-07-03 08:30:39', 0),
-(86, 'Chan Vannak', 'vannakchan884@gmail.com', NULL, 'Chan Vannak', 'https://lh3.googleusercontent.com/a/ACg8ocJs_S8o-utujtYCvNGavJ2rZurHYYwaJYkdsJ-vCuIncy-gCy1FTg=s96-c', 'user', '2025-07-03 07:54:20', '2025-07-03 08:41:37', 0);
+(86, 'Chan Vannak', 'vannakchan884@gmail.com', NULL, 'Vannak', 'https://lh3.googleusercontent.com/a/ACg8ocJs_S8o-utujtYCvNGavJ2rZurHYYwaJYkdsJ-vCuIncy-gCy1FTg=s96-c', 'admin', '2025-07-03 07:54:20', '2025-07-04 13:53:49', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

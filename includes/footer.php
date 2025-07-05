@@ -185,10 +185,10 @@
 
     // Remove profile image
     removeBtn?.addEventListener('click', () => {
-        const confirmReset = confirm("Are you sure you want to reset your current avatar?");
-        if (confirmReset) {
+        if (confirm("Are you sure you want to reset your current avatar?")) {
             preview.src = 'assets/uploads/default.png';
             fileInput.value = '';
+            document.getElementById('removeProfilePhoto').value = '1'; // Mark for backend
             profileDropdown?.classList.add('hidden');
         }
     });

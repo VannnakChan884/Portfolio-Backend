@@ -25,13 +25,27 @@
             $updateIsDefaultAdmin = 0;
         }
 
-        // Image upload
-        if (!empty($_FILES['profile_image']['name'])) {
+        // Handle profile image removal or upload
+        $defaultImage = 'assets/uploads/default.png';
+
+        // Remove profile photo
+        if (!empty($_POST['remove_profile_photo']) && $_POST['remove_profile_photo'] === '1') {
+            if ($userProfile !== $defaultImage && file_exists($userProfile)) {
+                unlink($userProfile); // Delete old image
+            }
+            $updatedImage = $defaultImage;
+
+        // Upload new profile photo
+        } elseif (!empty($_FILES['profile_image']['name'])) {
             $targetDir = "assets/uploads/";
             $fileName = time() . '_' . basename($_FILES["profile_image"]["name"]);
             $targetFile = $targetDir . $fileName;
 
             if (move_uploaded_file($_FILES["profile_image"]["tmp_name"], $targetFile)) {
+                // Delete old image if not default
+                if ($userProfile !== $defaultImage && file_exists($userProfile)) {
+                    unlink($userProfile);
+                }
                 $updatedImage = $targetFile;
             }
         }
@@ -61,8 +75,8 @@
     <main class="flex-1 p-6 bg-gray-100 dark:bg-gray-900">
         <?php include 'includes/topbar.php'; ?>
 
-        <div class="max-w-full mx-auto bg-white dark:bg-gray-800 rounded shadow p-6">
-            <h2 class="text-xl font-bold mb-6">Your Profile</h2>
+        <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded shadow p-6">
+            <h2 class="text-xl font-bold mb-6">Public profile</h2>
 
             <?php
                 $toastMessage = $_SESSION['success'] ?? $_SESSION['error'] ?? '';
@@ -70,10 +84,10 @@
                 unset($_SESSION['success'], $_SESSION['error']);
             ?>
 
-            <form method="POST" enctype="multipart/form-data" class="max-w-xl space-y-4">
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
                 <!-- Profile Image Section -->
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Profile picture</label>
-                <div class="relative w-48 h-48 group">
+                <label class="block text-center text-sm font-medium text-gray-700 dark:text-gray-300">Profile picture</label>
+                <div class="relative w-48 h-48 group mx-auto">
                     <button type="button" id="profileImageDropdownBtn"
                         class="block w-full h-full focus:outline-none mt-1 hover:opacity-90 transition">
                         <img id="profilePreview"
@@ -106,6 +120,10 @@
 
                     <!-- Hidden File Input -->
                     <input type="file" id="profileImageInput" name="profile_image" class="hidden" accept="image/*">
+
+                    <!-- Hidden flag to track if user clicked "Remove photo" -->
+                    <input type="hidden" id="removeProfilePhoto" name="remove_profile_photo" value="0">
+
                 </div>
 
                 <div>
@@ -151,7 +169,7 @@
             </form>
 
             <!-- Sidebar footer -->
-            <footer class="flex flex-row gap-3 items-center justify-end py-3 mt-6 border-t border-gray-200 dark:border-gray-700">
+            <footer class="flex flex-row gap-3 items-center py-3 mt-6 border-t border-gray-200 dark:border-gray-700">
                 <a href="dashboard.php" class="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center focus:outline-none">
                     <img src="<?= htmlspecialchars($userProfile) ?>" alt="Profile" class="w-full h-full object-cover hover:opacity-80">
                 </a>

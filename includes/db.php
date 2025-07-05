@@ -12,8 +12,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// // Enable foreign key checks (optional in MySQL)
-// $conn->query("SET foreign_key_checks = 0");
+// Enable foreign key checks (optional in MySQL)
+$conn->query("SET foreign_key_checks = 0");
 
 // // Users Table (parent table)
 // $conn->query(" CREATE TABLE IF NOT EXISTS users (

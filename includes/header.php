@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once 'db.php';
+require_once 'auto_login.php';
 
 // Redirect to login if not authenticated
 if (!isset($_SESSION["admin_logged_in"])) {
@@ -7,7 +9,6 @@ if (!isset($_SESSION["admin_logged_in"])) {
     exit();
 }
 
-require_once 'includes/db.php';
 
 // Initialize defaults
 $siteTitle = 'Admin Dashboard';

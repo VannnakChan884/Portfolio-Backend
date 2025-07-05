@@ -1,5 +1,5 @@
-<?php include 'includes/header.php'; ?>
 <?php
+    require_once 'includes/header.php';
     // Fetch counts
     $totalSkills = $conn->query("SELECT COUNT(*) as total FROM skills")->fetch_assoc()['total'];
     $totalProjects = $conn->query("SELECT COUNT(*) as total FROM projects")->fetch_assoc()['total'];

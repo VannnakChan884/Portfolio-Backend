@@ -143,7 +143,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                    <input type="password" name="password" class="w-full mt-1 p-2 border rounded dark:bg-gray-800" placeholder="Leave blank to keep current" />
+                    <input type="password" name="password" class="w-full mt-1 p-2 border rounded dark:bg-gray-800" placeholder="Leave blank to keep your current password" />
                 </div>
 
                 <div>

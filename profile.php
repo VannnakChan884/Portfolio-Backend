@@ -169,7 +169,7 @@
             </form>
 
             <!-- Sidebar footer -->
-            <footer class="flex flex-row gap-3 items-center py-3 mt-6 border-t border-gray-200 dark:border-gray-700">
+            <footer class="flex flex-row gap-3 items-center justify-center py-3 mt-6 border-t border-gray-200 dark:border-gray-700">
                 <a href="dashboard.php" class="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center focus:outline-none">
                     <img src="<?= htmlspecialchars($userProfile) ?>" alt="Profile" class="w-full h-full object-cover hover:opacity-80">
                 </a>

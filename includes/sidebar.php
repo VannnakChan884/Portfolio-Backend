@@ -50,7 +50,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <li>
                 <a href="users.php"
                     class="menu-item flex items-center gap-2 py-1 px-4 hover:bg-gray-200 dark:hover:bg-gray-700 block <?= $currentPage === 'users.php' ? 'bg-gray-100 dark:bg-gray-700 font-semibold' : '' ?>">
-                    <div class="flex items-center justify-center w-10 h-10"><i class="fas fa-users"></i> </div>
+                    <div class="flex items-center justify-center w-10 h-10"><i class="fas fa-user"></i> </div>
                     <span class="menu-text">Manage Users</span>
                 </a>
             </li>

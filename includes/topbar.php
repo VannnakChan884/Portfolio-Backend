@@ -18,17 +18,7 @@
                 class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-700 shadow-lg rounded-lg border dark:border-gray-500 hidden z-50">
                 <div class="p-4 font-semibold border-b dark:border-gray-500">New Messages</div>
                 <div id="messageList" class="max-h-64 overflow-y-auto">
-                    <?php if (count($messages) > 0): ?>
-                        <?php foreach ($messages as $msg): ?>
-                            <div class="px-4 py-2 border-b hover:bg-gray-50 dark:border-gray-500 dark:hover:bg-gray-800">
-                                <div class="font-semibold text-sm"><?= htmlspecialchars($msg['name']) ?></div>
-                                <div class="text-sm text-gray-600 dark:text-gray-300"><?= htmlspecialchars($msg['subject']) ?></div>
-                                <div class="text-xs text-gray-400"><?= date('M d, H:i', strtotime($msg['sent_at'])) ?></div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="px-4 py-2 text-gray-500 text-sm">No messages</div>
-                    <?php endif; ?>
+                    <!-- JS will populate here -->
                 </div>
                 <a href="messages.php" class="block text-center py-2 text-blue-600 dark:text-gray-200 hover:underline border-t dark:border-gray-500">View
                     All</a>
@@ -44,19 +34,46 @@
 
         <!-- Profile Dropdown -->
         <div class="relative group">
-            <button class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
+            <button id="topbarProfileDropdownBtn" class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center focus:outline-none">
                 <?php if ($userProfile): ?>
                     <img src="<?= htmlspecialchars($userProfile) ?>" alt="Profile" class="w-full h-full object-cover">
                 <?php else: ?>
-                    <span class="text-sm">N/A</span>
+                    <span class="text-sm text-white bg-gray-500 w-full h-full flex items-center justify-center">N/A</span>
                 <?php endif; ?>
             </button>
-            <div
-                class="absolute -bottom-10 right-0 w-40 bg-white dark:bg-gray-800 text-red-500 dark:text-gray-200 rounded shadow-lg z-10 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition">
-                <a href="logout.php" class="block px-6 py-2 hover:bg-red-400 hover:text-white rounded">
-                    <i class="fa-solid fa-power-off"></i>
-                    Logout
-                </a>
+
+            <!-- Dropdown Menu -->
+            <div id="topbarProfileDropdown" class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg hidden z-50 border dark:border-gray-600">
+                <!-- Profile Header -->
+                <div class="flex items-center gap-3 p-4 dark:border-gray-600">
+                    <img src="<?= htmlspecialchars($userProfile ?: 'assets/uploads/default.png') ?>" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                    <div>
+                        <div class="font-bold text-sm"><?= htmlspecialchars($siteTitle) ?></div>
+                        <div class="text-xs text-gray-500">@<?= htmlspecialchars($username) ?></div>
+                        <?php if (!empty($isDefaultAdmin)): ?>
+                            <div class="text-xs text-red-500 font-semibold">Default Admin</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Menu Items -->
+                <ul class="text-sm text-gray-700 dark:text-gray-200 px-4 py-2">
+                    <li class="py-2 border-y">
+                        <a href="profile.php" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                            <i class="fas fa-user mr-2 w-4"></i> Your Profile
+                        </a>
+                    </li>
+                    <li class="py-2 border-b">
+                        <a href="settings.php" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                            <i class="fas fa-cog mr-2 w-4"></i> Settings
+                        </a>
+                    </li>
+                    <li class="py-2">
+                        <a href="logout.php" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-600 dark:hover:text-white rounded-lg">
+                            <i class="fa-solid fa-right-from-bracket mr-2 w-4"></i> Sign Out
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

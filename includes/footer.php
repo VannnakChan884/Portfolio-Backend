@@ -55,45 +55,137 @@
     }
 
     // Topbar script
-    document.addEventListener("DOMContentLoaded", () => {
-        const badge = document.getElementById("unread-badge");
+    // Get message to show on dropdown list
+    function fetchMessages() {
+        fetch('fetch_messages.php')
+            .then(response => response.json())
+            .then(data => {
+                const messageList = document.getElementById('messageList');
+                if (!messageList) return;
 
-        async function fetchUnreadCount() {
-            try {
-                const res = await fetch("api/get-unread-count.php");
-                const data = await res.json();
-                if (data.unread > 0) {
-                    badge.textContent = data.unread;
-                    badge.classList.remove("hidden");
-                } else {
-                    badge.classList.add("hidden");
+                messageList.innerHTML = '';
+
+                if (data.length === 0) {
+                    messageList.innerHTML = '<div class="px-4 py-2 text-gray-500 text-sm">No messages</div>';
+                    return;
                 }
-            } catch (err) {
-                console.error("Failed to fetch unread count:", err);
-            }
+
+                data.forEach(msg => {
+                    const msgItem = document.createElement('div');
+                    msgItem.className = 'mx-4 px-4 py-2 border-b border-dashed last:border-0 hover:bg-gray-50 dark:border-gray-500 dark:hover:bg-gray-800';
+
+                    msgItem.innerHTML = `
+                        <div class="font-semibold text-sm">${msg.name}</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-300">${msg.subject}</div>
+                        <div class="text-xs text-gray-400">${formatTime(msg.sent_at)}</div>
+                    `;
+
+                    messageList.appendChild(msgItem);
+                });
+            });
+    }
+
+    // Format time like "Jul 03, 15:20"
+    function formatTime(dateString) {
+        const options = { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleString('en-US', options);
+    }
+
+    // Fetch every 10 seconds
+    setInterval(fetchMessages, 10000);
+
+    // Fetch on page load
+    fetchMessages();
+
+    // Get unread message count
+    function fetchUnreadCount() {
+        fetch('fetch_unread.php')
+            .then(response => response.text())
+            .then(count => {
+                document.getElementById('unread-badge').textContent = count;
+            });
+    }
+
+    setInterval(fetchUnreadCount, 10000);
+    fetchUnreadCount();
+
+    // === Profile Image Dropdown ===
+    const profileBtn = document.getElementById('profileImageDropdownBtn');
+    const profileDropdown = document.getElementById('profileImageDropdown');
+
+    // === Topbar Profile Dropdown ===
+    const topbarBtn = document.getElementById('topbarProfileDropdownBtn');
+    const topbarDropdown = document.getElementById('topbarProfileDropdown');
+
+    // === Message Dropdown ===
+    const messageBtn = document.getElementById('messageToggle');
+    const messageDropdown = document.getElementById('messageDropdown');
+
+    const fileInput = document.getElementById('profileImageInput');
+    const preview = document.getElementById('profilePreview');
+    const removeBtn = document.getElementById('removePhotoBtn');
+
+    // Utility: close all dropdowns
+    function closeAllDropdowns() {
+        profileDropdown?.classList.add('hidden');
+        topbarDropdown?.classList.add('hidden');
+        messageDropdown?.classList.add('hidden');
+    }
+
+    // Profile image toggle
+    profileBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasHidden = profileDropdown.classList.contains('hidden');
+        closeAllDropdowns();
+        if (wasHidden) profileDropdown.classList.remove('hidden');
+    });
+
+    // Topbar profile toggle
+    topbarBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasHidden = topbarDropdown.classList.contains('hidden');
+        closeAllDropdowns();
+        if (wasHidden) topbarDropdown.classList.remove('hidden');
+    });
+
+    // Message toggle
+    messageBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasHidden = messageDropdown.classList.contains('hidden');
+        closeAllDropdowns();
+        if (wasHidden) messageDropdown.classList.remove('hidden');
+    });
+
+    // Outside click closes all
+    document.addEventListener('click', (e) => {
+        if (
+            !profileDropdown?.contains(e.target) && !profileBtn?.contains(e.target) &&
+            !topbarDropdown?.contains(e.target) && !topbarBtn?.contains(e.target) &&
+            !messageDropdown?.contains(e.target) && !messageBtn?.contains(e.target)
+        ) {
+            closeAllDropdowns();
         }
+    });
 
-        // Initial call
-        fetchUnreadCount();
+    // Live image preview
+    fileInput?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+        }
+    });
 
-        // Poll every 10 seconds
-        setInterval(fetchUnreadCount, 10000);
-
-        const toggle = document.getElementById('messageToggle');
-        const dropdown = document.getElementById('messageDropdown');
-
-        toggle.addEventListener('click', () => {
-            dropdown.classList.toggle('hidden');
-        });
-
-        // Optional: close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
+    // Remove profile image
+    removeBtn?.addEventListener('click', () => {
+        const confirmReset = confirm("Are you sure you want to reset your current avatar?");
+        if (confirmReset) {
+            preview.src = 'assets/uploads/default.png';
+            fileInput.value = '';
+            profileDropdown?.classList.add('hidden');
+        }
     });
 </script>
+
 </body>
 
 </html>

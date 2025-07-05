@@ -26,10 +26,6 @@ if (isset($_GET['delete'])) {
 }
 
 $allMessagesResult = $conn->query("SELECT * FROM messages ORDER BY sent_at DESC");
-
-// Count unread
-// $unreadResult = $conn->query("SELECT COUNT(*) AS unread FROM messages WHERE is_read = 0");
-// $unreadCount = $unreadResult->fetch_assoc()['unread'];
 ?>
 
 <div class="flex min-h-screen">

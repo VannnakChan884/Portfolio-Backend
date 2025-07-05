@@ -24,15 +24,16 @@ if (isset($_SESSION['admin_id'])) {
     $adminId = $_SESSION['admin_id'];
 
     // Use a prepared statement for security
-    $stmt = $conn->prepare("SELECT username, full_name, user_profile FROM users WHERE id = ?");
+    $stmt = $conn->prepare("SELECT username, full_name, user_profile, is_default_admin FROM users WHERE id = ?");
     $stmt->bind_param("i", $adminId);
     $stmt->execute();
-    $stmt->bind_result($username, $full_name, $user_profile);
+    $stmt->bind_result($username, $full_name, $user_profile, $is_default_admin);
     $stmt->fetch();
     $stmt->close();
 
     $siteTitle = $full_name ?: $siteTitle;
     $userName = $username ?: $userName;
+    $isDefaultAdmin = $is_default_admin ?: null;
 
     // ✅ Update profile only if it's a local file or valid image
     if (!empty($user_profile)) {
@@ -40,16 +41,6 @@ if (isset($_SESSION['admin_id'])) {
             $userProfile = $user_profile;
         } elseif (file_exists($user_profile)) {
             $userProfile = $user_profile;
-        }
-    }
-
-    // Fetch top 5 recent messages (unread or all)
-    // Only run if $messages not already set by the page
-    if (!isset($messages)) {
-        $messages = [];
-        $msgQuery = $conn->query("SELECT name, subject, sent_at FROM messages ORDER BY sent_at DESC LIMIT 5");
-        while ($row = $msgQuery->fetch_assoc()) {
-            $messages[] = $row;
         }
     }
 }

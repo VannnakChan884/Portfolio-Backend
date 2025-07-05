@@ -305,9 +305,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Toast -->
-            <!-- <div id="toastSuccess" class="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg hidden transition">User deleted successfully.</div> -->
         </div>
      </main>
 </div>

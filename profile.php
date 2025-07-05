@@ -72,7 +72,6 @@
 
             <form method="POST" enctype="multipart/form-data" class="max-w-xl space-y-4">
                 <!-- Profile Image Section -->
-                
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Profile picture</label>
                 <div class="relative w-48 h-48 group">
                     <button type="button" id="profileImageDropdownBtn"
@@ -82,18 +81,23 @@
                             alt="Profile"
                             class="w-full h-full object-cover border-2 border-gray-300 rounded-full">
                         <!-- Floating Edit Icon -->
-                        <span class="absolute bottom-0 -right-2 px-3 py-1 bg-white dark:bg-gray-700 text-xs border rounded-lg shadow">
+                        <span class="absolute bottom-2 right-2 px-3 py-1 bg-white dark:bg-gray-700 text-xs border rounded-lg shadow">
                             <i class="fa-solid fa-pen text-xs text-gray-700 dark:text-gray-200"></i> Edit
                         </span>
                     </button>
 
-                    <!-- Profile Image Dropdown Menu -->
+                    <!-- Profile Image Dropdown with proper caret -->
                     <div id="profileImageDropdown"
-                        class="hidden absolute top-full mt-2 right-0 w-48 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded-lg shadow-lg z-50">
+                        class="hidden absolute top-full mt-1 py-2 right-0 w-52 bg-white dark:bg-gray-800 border dark:border-gray-600 rounded-lg shadow-lg z-50">
+
+                        <!-- Caret / Arrow -->
+                        <div class="absolute -top-2 right-12 w-4 h-4 bg-white dark:bg-gray-800 rotate-45 border-t border-l border-gray-200 dark:border-gray-600 z-[-1]"></div>
+                        
                         <label for="profileImageInput"
                             class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                             <i class="fa-solid fa-upload mr-2"></i> Upload a photo...
                         </label>
+
                         <button type="button" id="removePhotoBtn"
                             class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900 dark:text-red-400">
                             <i class="fa-solid fa-trash mr-2"></i> Remove photo
@@ -145,6 +149,15 @@
 
                 <button type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Save Changes</button>
             </form>
+
+            <!-- Sidebar footer -->
+            <footer class="flex flex-row gap-3 items-center justify-end py-3 mt-6 border-t border-gray-200 dark:border-gray-700">
+                <a href="dashboard.php" class="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center focus:outline-none">
+                    <img src="<?= htmlspecialchars($userProfile) ?>" alt="Profile" class="w-full h-full object-cover hover:opacity-80">
+                </a>
+                <!-- Expanded version (full text) -->
+                <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">© <?= date('Y') ?> <?= htmlspecialchars($userName) ?>, Portfolio.</span>
+            </footer>
         </div>
     </main>
 </div>

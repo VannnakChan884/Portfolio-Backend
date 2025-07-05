@@ -95,6 +95,14 @@ $allMessagesResult = $conn->query("SELECT * FROM messages ORDER BY sent_at DESC"
                     </tbody>
                 </table>
             </div>
+            <!-- Sidebar footer -->
+            <footer class="flex flex-row gap-3 items-center py-3 border-t border-gray-200 dark:border-gray-700">
+                <a href="dashboard.php" class="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center focus:outline-none">
+                    <img src="<?= htmlspecialchars($userProfile) ?>" alt="Profile" class="w-full h-full object-cover hover:opacity-80">
+                </a>
+                <!-- Expanded version (full text) -->
+                <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">© <?= date('Y') ?> <?= htmlspecialchars($userName) ?>, Portfolio.</span>
+            </footer>
         </div>
     </main>
 </div>

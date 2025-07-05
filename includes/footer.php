@@ -45,6 +45,10 @@
         sidebar.classList.add('w-16');
         menuTextItems.forEach(text => text.classList.add('hidden'));
         if (menuTitle) menuTitle.classList.add('hidden');
+
+        // Show collapsed footer, hide expanded
+        document.querySelector('.collapsed-footer')?.classList.remove('hidden');
+        document.querySelector('.menu-text.text-xs')?.classList.add('hidden');
     }
 
     function expandSidebar() {
@@ -52,6 +56,10 @@
         sidebar.classList.add('w-1/3', 'xl:w-1/6', 'lg:w-1/4');
         menuTextItems.forEach(text => text.classList.remove('hidden'));
         if (menuTitle) menuTitle.classList.remove('hidden');
+
+        // Hide collapsed footer, show expanded
+        document.querySelector('.collapsed-footer')?.classList.add('hidden');
+        document.querySelector('.menu-text.text-xs')?.classList.remove('hidden');
     }
 
     // Topbar script

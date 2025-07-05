@@ -4,6 +4,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 
 <aside id="sidebar" class="sticky top-0 h-screen bg-white dark:bg-gray-800 shadow-xl transition-all duration-300 ease-in-out overflow-hidden w-1/3 xl:w-1/6 lg:w-1/4">
+    <!-- Sidebar content (nav + menu) -->
     <nav>
         <div class="flex items-center justify-between bg-gray-100 dark:bg-gray-700 py-4 px-4">
             <h2 class="menu-title text-2xl font-bold capitalize">Portfolio - <?= htmlspecialchars($userName) ?></h2>
@@ -63,4 +64,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             </li>
         </ul>
     </nav>
+
+    <!-- Sidebar footer -->
+    <footer class="py-3 border-t border-gray-200 dark:border-gray-700">
+        <!-- Collapsed version (icon only) -->
+        <span class="collapsed-footer hidden flex justify-center text-xs text-gray-500 dark:text-gray-400">© <?= date('Y') ?></span>
+
+        <!-- Expanded version (full text) -->
+        <span class="menu-text px-4 text-xs text-gray-500 dark:text-gray-400 capitalize">© <?= date('Y') ?> <?= htmlspecialchars($userName) ?>, Portfolio.</span>
+    </footer>
 </aside>

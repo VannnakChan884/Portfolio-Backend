@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 05, 2025 at 08:05 AM
+-- Generation Time: Jul 05, 2025 at 08:16 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.4.0
 
@@ -201,6 +201,22 @@ INSERT INTO `messages` (`id`, `name`, `email`, `subject`, `message`, `reply`, `r
 (20, 'Chan Vannak', 'dev@gmail.com', 'Hello admin', '456989', NULL, NULL, 0, '2025-07-05 01:12:30'),
 (21, 'fsdfsd', 'admin@gmail.com', 'sdfads', 'dsdfasdaf', NULL, NULL, 0, '2025-07-05 01:17:30'),
 (22, 'Test10', 'test10@gmail.com', 'Test10', '10', NULL, NULL, 0, '2025-07-05 01:21:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_resets`
+--
+
+DROP TABLE IF EXISTS `password_resets`;
+CREATE TABLE IF NOT EXISTS `password_resets` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 

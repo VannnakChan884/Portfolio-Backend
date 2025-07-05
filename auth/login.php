@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="text-right">
-          <a href="#" class="text-sm text-blue-500 hover:underline">Forgot Password?</a>
+          <a href="../forgot-password.php" class="text-sm text-blue-500 hover:underline">Forgot Password?</a>
         </div>
 
         <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded">

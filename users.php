@@ -215,7 +215,7 @@
                                     </form>
                                 <?php else: ?>
                                     <?php if ($viewingDefaultAdmin):?>
-                                        <span class="text-sm px-2 py-1 rounded bg-green-100 text-green-600">Super <?= htmlspecialchars($user['role']) ?></span>
+                                        <span class="text-sm px-2 py-1 rounded bg-green-100 text-green-600">Owner</span>
                                     <?php elseif ($user['role'] === 'admin'): ?>
                                         <span class="text-sm px-2 py-1 rounded bg-yellow-100 text-yellow-600"><?= htmlspecialchars($user['role']) ?></span>
                                     <?php else: ?>

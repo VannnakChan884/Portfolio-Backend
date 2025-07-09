@@ -1,85 +1,109 @@
 <?php
 session_start();
+date_default_timezone_set('Asia/Phnom_Penh');
 require_once '../includes/db.php';
 
-$error = '';
+$MAX_ATTEMPTS = 5;
+$LOCKOUT_DURATION = 300; // 5 minutes
 
+$email = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $username = trim($_POST['username']);
-  $password = $_POST['password'];
-  $remember = isset($_POST['remember']) ? true : false;
+  $email = trim($_POST['email']);
+  $password = $_POST['password'] ?? '';
+  $remember = isset($_POST['remember']);
 
-  $stmt = $conn->prepare("SELECT id, password, role, is_default_admin FROM users WHERE username = ?");
-  $stmt->bind_param("s", $username);
-  $stmt->execute();
-  $stmt->store_result();
-
-  if ($stmt->num_rows === 1) {
-    $stmt->bind_result($id, $hashed_password, $role, $is_default_admin);
-    $stmt->fetch();
-
-    if (!password_verify($password, $hashed_password)) {
-      $error = "Incorrect password.";
-    } elseif (empty($role)) {
-      $error = "Your account is pending approval by an admin.";
-    } else {
-      // Check if user has unverified valid code
-      $codeStmt = $conn->prepare("SELECT code, is_used, expires_at FROM login_codes WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
-      $codeStmt->bind_param("i", $id);
-      $codeStmt->execute();
-      $codeResult = $codeStmt->get_result();
-      $codeData = $codeResult->fetch_assoc();
-
-      if ($codeData && !$codeData['is_used'] && strtotime($codeData['expires_at']) > time()) {
-        $_SESSION['pending_user_id'] = $id;
-        header("Location: verify.php");
-        exit;
-      } else {
-        // Login success (already verified)
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_id'] = $id;
-        $_SESSION['admin_role'] = $role;
-        $_SESSION['is_default_admin'] = $is_default_admin;
-
-        // Remember me functionality
-        if ($remember) {
-          // Generate a random token
-          $selector = bin2hex(random_bytes(12));
-          $validator = bin2hex(random_bytes(32));
-          $hashedValidator = password_hash($validator, PASSWORD_DEFAULT);
-          $expires = date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 30); // 30 days
-
-          // Delete any existing tokens for this user
-          $conn->query("DELETE FROM auth_tokens WHERE user_id = $id");
-
-          // Insert new token
-          $tokenStmt = $conn->prepare("INSERT INTO auth_tokens (selector, hashed_validator, user_id, expires_at) VALUES (?, ?, ?, ?)");
-          $tokenStmt->bind_param("ssis", $selector, $hashedValidator, $id, $expires);
-          $tokenStmt->execute();
-
-          // Set cookie (secure, httponly, samesite)
-          setcookie(
-            'remember',
-            $selector . ':' . $validator,
-            [
-              'expires' => time() + 60 * 60 * 24 * 30,
-              'path' => '/',
-              'domain' => '',
-              'secure' => true,
-              'httponly' => true,
-              'samesite' => 'Strict'
-            ]
-          );
-        }
-
-        header("Location: ../dashboard.php");
-        exit;
-      }
-    }
+  if (empty($email) || empty($password)) {
+    $_SESSION['error'] = "Email and password are required.";
   } else {
-    $error = "User not found.";
+    $stmt = $conn->prepare("SELECT id, password, role, is_default_admin, failed_attempts, last_failed_login FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 1) {
+      $stmt->bind_result($id, $hashed_password, $role, $is_default_admin, $failedAttempts, $lastFailed);
+      $stmt->fetch();
+
+      $now = time();
+      $lastFailedTime = strtotime($lastFailed);
+      $isLocked = $failedAttempts >= $MAX_ATTEMPTS && ($now - $lastFailedTime) < $LOCKOUT_DURATION;
+
+      if ($isLocked) {
+        $_SESSION['error'] = "Too many wrong attempts. Please try again after 5 minutes.";
+      } elseif (!password_verify($password, $hashed_password)) {
+        $stmt->close();
+        $stmt = $conn->prepare("UPDATE users SET failed_attempts = failed_attempts + 1, last_failed_login = NOW() WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $_SESSION['error'] = "Your credentials do not match our records!";
+      } elseif (empty($role)) {
+        $_SESSION['error'] = "Your account is pending approval by an admin.";
+        // Removed the redirect to show message on current page
+      } else {
+        // Reset failed attempts
+        $stmt->close();
+        $stmt = $conn->prepare("UPDATE users SET failed_attempts = 0 WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        // Check OTP
+        $codeStmt = $conn->prepare("SELECT code, is_used, expires_at FROM login_codes WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
+        $codeStmt->bind_param("i", $id);
+        $codeStmt->execute();
+        $codeResult = $codeStmt->get_result();
+        $codeData = $codeResult->fetch_assoc();
+
+        if ($codeData && !$codeData['is_used'] && strtotime($codeData['expires_at']) > time()) {
+          $_SESSION['pending_user_id'] = $id;
+          header("Location: verify.php?email=" . urlencode($email));
+          exit;
+        } else {
+          $_SESSION['admin_logged_in'] = true;
+          $_SESSION['admin_id'] = $id;
+          $_SESSION['admin_role'] = $role;
+          $_SESSION['is_default_admin'] = $is_default_admin;
+
+          if ($remember) {
+            $selector = bin2hex(random_bytes(12));
+            $validator = bin2hex(random_bytes(32));
+            $hashedValidator = password_hash($validator, PASSWORD_DEFAULT);
+            $expires = date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 30);
+
+            $conn->query("DELETE FROM auth_tokens WHERE user_id = $id");
+
+            $tokenStmt = $conn->prepare("INSERT INTO auth_tokens (selector, hashed_validator, user_id, expires_at) VALUES (?, ?, ?, ?)");
+            $tokenStmt->bind_param("ssis", $selector, $hashedValidator, $id, $expires);
+            $tokenStmt->execute();
+
+            setcookie(
+              'remember',
+              $selector . ':' . $validator,
+              [
+                'expires' => time() + 60 * 60 * 24 * 30,
+                'path' => '/',
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Strict'
+              ]
+            );
+          }
+
+          header("Location: ../dashboard.php");
+          exit;
+        }
+      }
+    } else {
+      $_SESSION['error'] = "User not found.";
+    }
+
+    $stmt->close();
   }
 }
+
+// Toast data for JS
+$toastMessage = $_SESSION['success'] ?? $_SESSION['error'] ?? '';
+$toastType = isset($_SESSION['success']) ? 'success' : (isset($_SESSION['error']) ? 'error' : '');
+unset($_SESSION['success'], $_SESSION['error']);
 ?>
 
 <!DOCTYPE html>
@@ -95,27 +119,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body class="bg-gray-900 flex items-center justify-center h-screen">
   <div class="bg-white w-full max-w-4xl rounded-2xl shadow-lg flex overflow-hidden">
-
     <!-- Left Side -->
     <div
       class="w-1/2 bg-gradient-to-br from-blue-500 to-blue-300 text-white flex flex-col justify-center items-center p-10 relative">
       <h2 class="text-4xl font-bold mb-2">LOGIN</h2>
       <p class="text-sm">Welcome back! Please login to your account.</p>
-      <div class="absolute top-0 left-0 w-16 h-16 bg-white opacity-10 rounded-br-full"></div>
     </div>
 
     <!-- Right Side -->
     <div class="w-1/2 p-10">
       <h3 class="text-2xl font-bold text-center mb-6">Admin Login</h3>
-
-      <!-- Notification Message -->
-      <?php if (isset($_SESSION['login_error'])): ?>
-        <div class="bg-red-100 text-red-800 p-3 rounded mb-4 text-sm">
-          <?= htmlspecialchars($_SESSION['login_error']) ?>
-        </div>
-        <?php unset($_SESSION['login_error']); ?>
-      <?php endif; ?>
-
 
       <?php if (isset($_GET['registered'])): ?>
         <div class="bg-green-100 text-green-700 px-4 py-2 text-sm rounded mb-4 text-center">
@@ -123,18 +136,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       <?php endif; ?>
 
-      <?php if ($error): ?>
-        <div class="bg-red-100 text-red-600 px-4 py-2 text-sm rounded mb-4 text-center">
-          <?= htmlspecialchars($error) ?>
-        </div>
-      <?php endif; ?>
-
       <form method="post" class="space-y-4">
         <div>
           <label class="block text-sm font-medium">Email</label>
           <div class="flex items-center border rounded px-3 py-2">
-            <i class="fa-solid fa-user text-gray-400 mr-2"></i>
-            <input type="text" name="username" required placeholder="Enter your username" class="w-full outline-none">
+            <i class="fa-solid fa-envelope text-gray-400 mr-2"></i>
+            <input type="email" name="email" value="<?= htmlspecialchars($email) ?>" required
+              placeholder="Enter your email" class="w-full outline-none">
           </div>
         </div>
 
@@ -178,6 +186,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </p>
     </div>
   </div>
+
+  <?php if ($toastMessage): ?>
+    <script type="module">
+      import { toast } from '../assets/js/toast-utils.js';
+      toast(<?= json_encode($toastMessage) ?>, <?= json_encode($toastType) ?>);
+    </script>
+  <?php endif; ?>
 </body>
 
 </html>
